@@ -32,7 +32,7 @@ export interface Ticket {
 }
 
 // ─── Deriv Brand Tokens ───────────────────────────────────────────────────────
-const C = {
+const C_LIGHT = {
   coral:       "#FF444F",
   coralDark:   "#D93540",
   coralLight:  "#FFF0F1",
@@ -58,6 +58,42 @@ const C = {
   purple:      "#7C3AED",
   purpleLight: "#F5F3FF",
 };
+
+const C_DARK = {
+  coral:       "#FF444F",
+  coralDark:   "#FF5A65",
+  coralLight:  "#2D1C1E",
+  coralMid:    "#442426",
+  slate:       "#F4F5F7",
+  slateMid:    "#E4E7ED",
+  slateLight:  "#9AA0B4",
+  bg:          "#0E1118",
+  card:        "#161B26",
+  border:      "#222938",
+  borderLight: "#1C212E",
+  text:        "#F4F5F7",
+  textSub:     "#A0AEC0",
+  textMuted:   "#64748B",
+  green:       "#10B981",
+  greenLight:  "#112E24",
+  amber:       "#F59E0B",
+  amberLight:  "#2D2312",
+  red:         "#EF4444",
+  redLight:    "#2D1A1C",
+  blue:        "#3B82F6",
+  blueLight:   "#13253E",
+  purple:      "#8B5CF6",
+  purpleLight: "#231B36",
+};
+
+let currentTheme: "light" | "dark" = "light";
+
+export const C = new Proxy({} as typeof C_LIGHT, {
+  get(_, prop) {
+    const active = currentTheme === "dark" ? C_DARK : C_LIGHT;
+    return active[prop as keyof typeof C_LIGHT];
+  }
+});
 const F = "'Inter', Arial, sans-serif";
 
 // ─── Status workflow order ────────────────────────────────────────────────────
@@ -358,18 +394,222 @@ function Toast({ msg, onDone }: { msg: string; onDone: () => void }) {
 // ─── Portal selector ──────────────────────────────────────────────────────────
 const PORTALS = [
   { id:"staff",      label:"Staff Member",         desc:"Submit and track your repair or maintenance requests",         icon:"👤", iconBg:C.slate },
-  { id:"it",         label:"IT Administrator",      desc:"Manage technology, software, and hardware requests",           icon:"💻", iconBg:C.purple },
+  { id:"it",         label:"IT Admin",             desc:"Manage technology, software, and hardware requests",           icon:"💻", iconBg:C.purple },
   { id:"facilities", label:"Facilities Management", desc:"Handle physical space, equipment, and infrastructure issues",  icon:"🔧", iconBg:"#0F766E" },
   { id:"admin",      label:"Admin Office",          desc:"Process administrative requests, supplies, and general tasks", icon:"📋", iconBg:"#475569" },
 ];
 
-function PortalSelector({ onSelect, office, setOffice }: { onSelect: (id: string) => void; office: string; setOffice: (off: string) => void }) {
+// ─── Deriv Global Office Locations with Neon Landmarks ────────────────────────
+const NEON_LOCATIONS = [
+  {
+    country: "CYPRUS",
+    city: "Limassol",
+    flag: "🇨🇾",
+    staff: "142 Staff",
+    image: "/src/assets/images/neon_cyprus_1783766539962.jpg",
+    color: "#F97316", // Vibrant orange
+    shadow: "rgba(249,115,22,0.35)",
+    officeValue: "Limassol, Cyprus"
+  },
+  {
+    country: "MALTA",
+    city: "St. Julian's",
+    flag: "🇲🇹",
+    staff: "128 Staff",
+    image: "/src/assets/images/neon_malta_1783766550652.jpg",
+    color: "#EC4899", // Glowing pink
+    shadow: "rgba(236,72,153,0.35)",
+    officeValue: "Birkirkara, Malta"
+  },
+  {
+    country: "RWANDA",
+    city: "Kigali",
+    flag: "🇷🇼",
+    staff: "156 Staff",
+    image: "/src/assets/images/neon_rwanda_1783766561662.jpg",
+    color: "#10B981", // Emerald green
+    shadow: "rgba(16,185,129,0.35)",
+    officeValue: "Kigali, Rwanda"
+  },
+  {
+    country: "MALAYSIA",
+    city: "Cyberjaya",
+    flag: "🇲🇾",
+    staff: "198 Staff",
+    image: "/src/assets/images/neon_malaysia_1783766573318.jpg",
+    color: "#3B82F6", // Cyan blue
+    shadow: "rgba(59,130,246,0.35)",
+    officeValue: "Cyberjaya, Malaysia (HQ)"
+  },
+  {
+    country: "PARAGUAY",
+    city: "Asunción",
+    flag: "🇵🇾",
+    staff: "96 Staff",
+    image: "/src/assets/images/neon_paraguay_1783766584359.jpg",
+    color: "#EF4444", // Neon red
+    shadow: "rgba(239,68,68,0.35)",
+    officeValue: "Asunción, Paraguay"
+  },
+  {
+    country: "UK",
+    city: "London",
+    flag: "🇬🇧",
+    staff: "113 Staff",
+    image: "/src/assets/images/neon_london_1783766593631.jpg",
+    color: "#EAB308", // Sun yellow
+    shadow: "rgba(234,179,8,0.35)",
+    officeValue: "London, UK"
+  },
+  {
+    country: "UAE",
+    city: "Dubai",
+    flag: "🇦🇪",
+    staff: "134 Staff",
+    image: "/src/assets/images/neon_dubai_1783766603861.jpg",
+    color: "#A855F7", // Purple neon
+    shadow: "rgba(168,85,247,0.35)",
+    officeValue: "Dubai – JLT, UAE"
+  },
+  {
+    country: "FRANCE",
+    city: "Paris",
+    flag: "🇫🇷",
+    staff: "105 Staff",
+    image: "/src/assets/images/neon_paris_1783767894468.jpg",
+    color: "#2563EB", // Blue glow
+    shadow: "rgba(37,99,235,0.35)",
+    officeValue: "Paris, France"
+  },
+  {
+    country: "GERMANY",
+    city: "Berlin",
+    flag: "🇩🇪",
+    staff: "89 Staff",
+    image: "/src/assets/images/neon_berlin_1783767908842.jpg",
+    color: "#F59E0B", // Amber glow
+    shadow: "rgba(245,158,11,0.35)",
+    officeValue: "Berlin, Germany"
+  },
+  {
+    country: "GUERNSEY",
+    city: "St. Peter Port",
+    flag: "🇬🇬",
+    staff: "62 Staff",
+    image: "/src/assets/images/neon_guernsey_1783767921351.jpg",
+    color: "#10B981", // Emerald green glow
+    shadow: "rgba(16,185,129,0.35)",
+    officeValue: "Guernsey, Channel Islands"
+  },
+  {
+    country: "SINGAPORE",
+    city: "Singapore",
+    flag: "🇸🇬",
+    staff: "120 Staff",
+    image: "/src/assets/images/neon_singapore_1783767878394.jpg",
+    color: "#EC4899", // Pink glow
+    shadow: "rgba(236,72,153,0.35)",
+    officeValue: "Singapore"
+  },
+  {
+    country: "CAYMAN ISLANDS",
+    city: "George Town",
+    flag: "🇰🇾",
+    staff: "45 Staff",
+    image: "/src/assets/images/neon_cayman_1783767936674.jpg",
+    color: "#06B6D4", // Cyan glow
+    shadow: "rgba(6,182,212,0.35)",
+    officeValue: "George Town, Cayman Islands"
+  },
+  {
+    country: "VANUATU",
+    city: "Port Vila",
+    flag: "🇻🇺",
+    staff: "38 Staff",
+    image: "/src/assets/images/neon_vanuatu_1783767949363.jpg",
+    color: "#F43F5E", // Rose glow
+    shadow: "rgba(244,63,94,0.35)",
+    officeValue: "Port Vila, Vanuatu"
+  },
+  {
+    country: "MAURITIUS",
+    city: "Port Louis",
+    flag: "🇲🇺",
+    staff: "55 Staff",
+    image: "/src/assets/images/neon_mauritius_1783767963307.jpg",
+    color: "#8B5CF6", // Purple glow
+    shadow: "rgba(139,92,246,0.35)",
+    officeValue: "Mauritius"
+  }
+];
+
+function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { onSelect: (id: string) => void; office: string; setOffice: (off: string) => void; theme: "light" | "dark"; toggleTheme: () => void }) {
   const allTickets = Object.values(BASE_TICKETS).flat();
   const activeCount  = allTickets.filter(t => t.status !== "Resolved" && t.status !== "Closed").length;
   const resolvedRate = Math.round(allTickets.filter(t => t.status === "Resolved").length / allTickets.length * 100);
+  const [localToast, setLocalToast] = useState("");
+  
+  const [activeLocationIdx, setActiveLocationIdx] = useState(() => {
+    const idx = NEON_LOCATIONS.findIndex(loc => loc.officeValue === office || (loc.officeValue === "Cyberjaya, Malaysia (HQ)" && office.includes("Malaysia")));
+    return idx >= 0 ? idx : 3;
+  });
+
+  const [isMobile, setIsMobile] = useState(false);
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  React.useEffect(() => {
+    const idx = NEON_LOCATIONS.findIndex(loc => loc.officeValue === office || (loc.officeValue === "Cyberjaya, Malaysia (HQ)" && office.includes("Malaysia")));
+    if (idx >= 0 && idx !== activeLocationIdx) {
+      setActiveLocationIdx(idx);
+    }
+  }, [office]);
+
+  React.useEffect(() => {
+    if (!localToast) return;
+    const t = setTimeout(() => setLocalToast(""), 3500);
+    return () => clearTimeout(t);
+  }, [localToast]);
+
   return (
-    <div style={{ minHeight:"100vh", background:C.bg, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"40px 20px", fontFamily:F }}>
-      <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:44 }}>
+    <div style={{ minHeight:"100vh", background: theme === "dark" ? "#0A0D1A" : "#F4F5F7", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"40px 20px", fontFamily:F, position: "relative", overflowX: "hidden" }}>
+      {/* Floating Theme Toggle */}
+      <div style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}>
+        <button
+          onClick={toggleTheme}
+          style={{
+            padding: "8px 14px",
+            borderRadius: 12,
+            border: `1.5px solid ${theme === "dark" ? "#222942" : "#E4E7ED"}`,
+            background: theme === "dark" ? "#131726" : "#FFFFFF",
+            color: theme === "dark" ? "#FF444F" : "#181C25",
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            boxShadow: theme === "dark" ? "none" : "0 2px 8px rgba(0,0,0,0.05)",
+            fontFamily: F,
+            transition: "all 0.2s"
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.03)"; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+        >
+          {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+        </button>
+      </div>
+
+      {/* Dynamic Background Grid Mesh */}
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255, 68, 79, 0.03) 1px, transparent 1px), radial-gradient(rgba(139, 92, 246, 0.02) 1.5px, transparent 1.5px)", backgroundSize: "32px 32px", backgroundPosition: "0 0, 16px 16px", pointerEvents: "none", zIndex: 0 }} />
+      <div style={{ position: "absolute", top: "15%", left: "10%", width: "450px", height: "450px", borderRadius: "50%", background: `radial-gradient(circle, ${C.coral}05 0%, transparent 70%)`, pointerEvents: "none", zIndex: 0 }} />
+      <div style={{ position: "absolute", bottom: "15%", right: "10%", width: "500px", height: "500px", borderRadius: "50%", background: `radial-gradient(circle, ${C.purple}05 0%, transparent 70%)`, pointerEvents: "none", zIndex: 0 }} />
+
+      <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:44, zIndex: 1 }}>
         <div style={{ display:"flex", alignItems:"center", gap:6 }}>
           <div style={{ width:36, height:36, borderRadius:8, background:C.coral, display:"flex", alignItems:"center", justifyContent:"center" }}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -377,49 +617,361 @@ function PortalSelector({ onSelect, office, setOffice }: { onSelect: (id: string
               <circle cx="12" cy="11" r="3.5" fill="white" fillOpacity="0.5"/>
             </svg>
           </div>
-          <span style={{ fontFamily:F, fontWeight:800, fontSize:20, color:C.slate, letterSpacing:-0.5 }}>Deriv</span>
+          <span style={{ fontFamily:F, fontWeight:800, fontSize:20, color: theme === "dark" ? "#fff" : "#181C25", letterSpacing:-0.5 }}>Deriv</span>
         </div>
-        <div style={{ width:1, height:22, background:C.border }} />
-        <span style={{ fontSize:13, color:C.textSub, fontWeight:500 }}>Office Services</span>
+        <div style={{ width:1, height:22, background: theme === "dark" ? "#1F2538" : "#E4E7ED" }} />
+        <span style={{ fontSize:13, color: theme === "dark" ? "#8E9AA8" : "#515A70", fontWeight:500 }}>Office Services</span>
       </div>
-      <div style={{ textAlign:"center", marginBottom:40, maxWidth:540 }}>
-        <h1 style={{ fontFamily:F, fontSize:40, fontWeight:800, color:C.slate, margin:"0 0 14px", letterSpacing:-1 }}>Select your portal</h1>
-        <p style={{ fontSize:16, color:C.textSub, lineHeight:1.65, margin:0 }}>Choose your role to access the appropriate workspace.<br />Staff submit and track requests; teams manage and resolve them.</p>
+
+      {/* ─── Iconic Global Locations Section (Moved to the Top) ─────────────────── */}
+      <div style={{
+        marginBottom: 40,
+        width: "100%",
+        maxWidth: "1000px",
+        background: theme === "dark" ? "#0F111A" : "#FFFFFF",
+        borderRadius: 24,
+        border: theme === "dark" ? "1.5px solid #1E2230" : "1.5px solid #E4E7ED",
+        padding: "24px 28px",
+        boxShadow: theme === "dark" ? "0 12px 36px rgba(12,14,20,0.4)" : "0 4px 20px rgba(0,0,0,0.03)",
+        animation: "slideup 0.5s ease-out",
+        zIndex: 1,
+        position: "relative"
+      }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span className="animate-pulse" style={{ width: 8, height: 8, borderRadius: "50%", background: "#FF444F", boxShadow: "0 0 12px #FF444F" }} />
+            <span style={{ fontSize: 13, fontWeight: 800, color: theme === "dark" ? "#8E9AA8" : "#515A70", letterSpacing: "1px", fontFamily: F }}>OUR GLOBAL LOCATIONS</span>
+          </div>
+          <span style={{ fontSize: 11, color: theme === "dark" ? "#566474" : "#8E9AA8", fontWeight: 600 }}>Click cards or use arrows to navigate (No rows layout)</span>
+        </div>
+
+        <div style={{
+          position: "relative",
+          height: isMobile ? "220px" : "320px",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-end",
+          overflow: "hidden",
+          paddingBottom: "10px"
+        }}>
+          {/* Glowing Orbit Line */}
+          <div style={{
+            position: "absolute",
+            bottom: isMobile ? "-110px" : "-175px",
+            width: isMobile ? "240px" : "680px",
+            height: isMobile ? "240px" : "680px",
+            borderRadius: "50%",
+            border: `1.5px dashed ${theme === "dark" ? "rgba(255, 68, 79, 0.25)" : "rgba(255, 68, 79, 0.15)"}`,
+            boxShadow: theme === "dark" ? "0 0 16px rgba(255, 68, 79, 0.05)" : "none",
+            pointerEvents: "none",
+            left: "50%",
+            transform: "translateX(-50%)"
+          }} />
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              const prevIdx = (activeLocationIdx - 1 + NEON_LOCATIONS.length) % NEON_LOCATIONS.length;
+              setActiveLocationIdx(prevIdx);
+              setOffice(NEON_LOCATIONS[prevIdx].officeValue);
+              setLocalToast(`📍 Connected to ${NEON_LOCATIONS[prevIdx].city} Office Services subnet`);
+            }}
+            style={{
+              position: "absolute",
+              left: isMobile ? 0 : 10,
+              bottom: "50%",
+              transform: "translateY(50%)",
+              width: 38,
+              height: 38,
+              borderRadius: "50%",
+              background: theme === "dark" ? "#131726" : "#FFFFFF",
+              border: `1.5px solid ${theme === "dark" ? "#222942" : "#E4E7ED"}`,
+              color: theme === "dark" ? "#fff" : "#181C25",
+              fontSize: 16,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 15,
+              boxShadow: "0 4px 10px rgba(0,0,0,0.06)",
+              transition: "all 0.2s"
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(50%) scale(1.1)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(50%) scale(1)"; }}
+          >
+            ←
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              const nextIdx = (activeLocationIdx + 1) % NEON_LOCATIONS.length;
+              setActiveLocationIdx(nextIdx);
+              setOffice(NEON_LOCATIONS[nextIdx].officeValue);
+              setLocalToast(`📍 Connected to ${NEON_LOCATIONS[nextIdx].city} Office Services subnet`);
+            }}
+            style={{
+              position: "absolute",
+              right: isMobile ? 0 : 10,
+              bottom: "50%",
+              transform: "translateY(50%)",
+              width: 38,
+              height: 38,
+              borderRadius: "50%",
+              background: theme === "dark" ? "#131726" : "#FFFFFF",
+              border: `1.5px solid ${theme === "dark" ? "#222942" : "#E4E7ED"}`,
+              color: theme === "dark" ? "#fff" : "#181C25",
+              fontSize: 16,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 15,
+              boxShadow: "0 4px 10px rgba(0,0,0,0.06)",
+              transition: "all 0.2s"
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(50%) scale(1.1)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(50%) scale(1)"; }}
+          >
+            →
+          </button>
+
+          {NEON_LOCATIONS.map((loc, i) => {
+            const isSelected = office === loc.officeValue || (loc.officeValue === "Cyberjaya, Malaysia (HQ)" && office.includes("Malaysia"));
+            
+            // Circular Math
+            const total = NEON_LOCATIONS.length;
+            let targetDiff = i - activeLocationIdx;
+            if (targetDiff > total / 2) targetDiff -= total;
+            if (targetDiff < -total / 2) targetDiff += total;
+
+            const isVisible = isMobile ? Math.abs(targetDiff) <= 1 : Math.abs(targetDiff) <= 3;
+            const opacity = isVisible ? 1 : 0;
+            const zIndex = 10 - Math.abs(targetDiff);
+
+            const angle = targetDiff * (isMobile ? 36 : 22); // Angle of separation
+            const rad = (angle * Math.PI) / 180;
+
+            const radiusX = isMobile ? 120 : 340;
+            const radiusY = isMobile ? 35 : 65;
+
+            const tx = Math.sin(rad) * radiusX;
+            const ty = (1 - Math.cos(rad)) * radiusY;
+
+            const scale = isVisible ? (targetDiff === 0 ? 1.15 : 1 - Math.abs(targetDiff) * (isMobile ? 0.2 : 0.11)) : 0.5;
+            const rot = angle;
+
+            const cardWidth = isMobile ? 100 : 135;
+            const cardHeight = isMobile ? 145 : 195;
+
+            return (
+              <div
+                key={loc.country}
+                onClick={() => {
+                  setActiveLocationIdx(i);
+                  setOffice(loc.officeValue);
+                  setLocalToast(`⚡ Network switched to ${loc.city}, ${loc.country}!`);
+                }}
+                style={{
+                  position: "absolute",
+                  left: `calc(50% - ${cardWidth / 2}px)`,
+                  bottom: isMobile ? "20px" : "30px",
+                  width: cardWidth,
+                  height: cardHeight,
+                  background: theme === "dark" ? "#141724" : "#F8FAFC",
+                  borderRadius: 16,
+                  border: `1.5px solid ${isSelected ? loc.color : (theme === "dark" ? "#222738" : "#E2E8F0")}`,
+                  padding: isMobile ? "8px" : "12px",
+                  cursor: "pointer",
+                  transition: "all 0.5s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s, box-shadow 0.3s",
+                  boxShadow: isSelected ? `0 0 20px ${loc.shadow}` : (theme === "dark" ? "none" : "0 2px 8px rgba(0,0,0,0.03)"),
+                  display: "flex",
+                  flexDirection: "column",
+                  transform: `translate(${tx}px, ${ty}px) scale(${scale}) rotate(${rot}deg)`,
+                  opacity: opacity,
+                  pointerEvents: isVisible ? "auto" : "none",
+                  zIndex: zIndex,
+                  overflow: "hidden"
+                }}
+                className="group"
+                onMouseEnter={e => {
+                  if (!isSelected) {
+                    e.currentTarget.style.borderColor = loc.color;
+                    e.currentTarget.style.boxShadow = `0 0 12px ${loc.shadow}`;
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!isSelected) {
+                    e.currentTarget.style.borderColor = theme === "dark" ? "#222738" : "#E2E8F0";
+                    e.currentTarget.style.boxShadow = theme === "dark" ? "none" : "0 2px 8px rgba(0,0,0,0.03)";
+                  }
+                }}
+              >
+                {/* Landmark Neon Graphic */}
+                <div style={{
+                  position: "relative",
+                  width: "100%",
+                  paddingBottom: "80%",
+                  borderRadius: 10,
+                  overflow: "hidden",
+                  background: theme === "dark" ? "#08090E" : "#F1F5F9",
+                  marginBottom: 8
+                }}>
+                  <img
+                    src={loc.image}
+                    alt={`${loc.city} landmark`}
+                    referrerPolicy="no-referrer"
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      transition: "transform 0.4s ease"
+                    }}
+                    className="group-hover:scale-110"
+                  />
+                  <div style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%)"
+                  }} />
+                </div>
+
+                {/* Info Text */}
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div>
+                    {/* Country Header */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 2 }}>
+                      <span style={{ fontSize: isMobile ? 9 : 10 }}>{loc.flag}</span>
+                      <span style={{ fontSize: isMobile ? 8 : 9, fontWeight: 800, color: theme === "dark" ? "#fff" : "#181C25", letterSpacing: "0.5px" }}>{loc.country}</span>
+                    </div>
+                    {/* City Subtitle */}
+                    <div style={{ fontSize: isMobile ? 10 : 11, color: theme === "dark" ? "#8E9AA8" : "#515A70", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{loc.city}</div>
+                  </div>
+
+                  {/* Footprint Indicator */}
+                  <div style={{
+                    marginTop: 6,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 4,
+                    fontSize: isMobile ? 8 : 9,
+                    color: isSelected ? loc.color : (theme === "dark" ? "#566474" : "#7C8BA1"),
+                    fontFamily: "monospace",
+                    fontWeight: 700
+                  }}>
+                    <span>👥</span>
+                    <span>{loc.staff}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
-      <div style={{ marginBottom:36, display:"flex", alignItems:"center", gap:10, background:"#fff", padding:"10px 18px", borderRadius:12, border:`1.5px solid ${C.border}` }}>
+      
+      <div style={{ textAlign:"center", marginBottom:40, maxWidth:540, zIndex: 1 }}>
+        <h1 style={{ fontFamily:F, fontSize:40, fontWeight:800, color: theme === "dark" ? "#fff" : "#181C25", margin:"0 0 14px", letterSpacing:-1, lineHeight: 1.1 }}>Select your portal</h1>
+        <p style={{ fontSize:15, color: theme === "dark" ? "#8E9AA8" : "#515A70", lineHeight:1.6, margin:0 }}>Choose your role to access the appropriate workspace.<br />Staff submit and track requests; teams manage and resolve them.</p>
+      </div>
+
+      <div style={{ marginBottom:36, display:"flex", alignItems:"center", gap:10, background: theme === "dark" ? "#131726" : "#FFFFFF", padding:"10px 18px", borderRadius:12, border: theme === "dark" ? "1.5px solid #222942" : "1.5px solid #E4E7ED", zIndex: 1, boxShadow: theme === "dark" ? "none" : "0 4px 12px rgba(0,0,0,0.03)" }}>
         <span style={{ fontSize:16 }}>📍</span>
-        <span style={{ fontSize:13, color:C.textSub, fontWeight:500 }}>Your office:</span>
-        <select value={office} onChange={e => setOffice(e.target.value)} style={{ border:"none", fontSize:13, background:"transparent", color:C.slate, fontFamily:F, fontWeight:700, outline:"none", cursor:"pointer", paddingRight:8 }}>
-          {OFFICES.map(o => <option key={o}>{o}</option>)}
+        <span style={{ fontSize:13, color: theme === "dark" ? "#8E9AA8" : "#515A70", fontWeight:500 }}>Your office:</span>
+        <select value={office} onChange={e => {
+          setOffice(e.target.value);
+          const cityMatched = NEON_LOCATIONS.find(loc => loc.officeValue === e.target.value || (e.target.value.includes("Malaysia") && loc.officeValue.includes("Malaysia")));
+          if (cityMatched) {
+            setLocalToast(`📍 Connected to ${cityMatched.city} Office Services subnet`);
+          }
+        }} style={{ border:"none", fontSize:13, background:"transparent", color: theme === "dark" ? "#fff" : "#181C25", fontFamily:F, fontWeight:700, outline:"none", cursor:"pointer", paddingRight:8 }}>
+          {OFFICES.map(o => <option key={o} style={{ background: theme === "dark" ? "#131726" : "#FFFFFF", color: theme === "dark" ? "#fff" : "#181C25" }}>{o}</option>)}
         </select>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl w-full">
-        {PORTALS.map(p => (
-          <div key={p.id} onClick={() => onSelect(p.id)}
-            style={{ background:"#fff", borderRadius:20, padding:"28px 28px 24px", border:`1.5px solid ${C.border}`, cursor:"pointer", transition:"all 0.18s", position:"relative" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor=C.coral; e.currentTarget.style.transform="translateY(-2px)"; e.currentTarget.style.boxShadow="0 8px 32px rgba(255,68,79,0.10)"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.transform="none"; e.currentTarget.style.boxShadow="none"; }}>
-            <div style={{ position:"absolute", top:24, right:24, color:C.textMuted, fontSize:18 }}>→</div>
-            <div style={{ width:50, height:50, borderRadius:14, background:p.iconBg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, marginBottom:16 }}>{p.icon}</div>
-            <div style={{ fontWeight:700, fontSize:16, color:C.slate, marginBottom:8 }}>{p.label}</div>
-            <div style={{ fontSize:14, color:C.textSub, lineHeight:1.55 }}>{p.desc}</div>
-          </div>
-        ))}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl w-full" style={{ zIndex: 1 }}>
+        {PORTALS.map(p => {
+          // Dynamic custom glowing indicators based on portal roles
+          const glowColor = p.id === "staff" ? C.coral : p.id === "it" ? C.purple : p.id === "facilities" ? "#0F766E" : "#475569";
+          return (
+            <div key={p.id} onClick={() => onSelect(p.id)}
+              style={{
+                background: theme === "dark" ? "#131726" : "#FFFFFF",
+                borderRadius: 20,
+                padding: "28px 28px 24px",
+                border: theme === "dark" ? "1.5px solid #222942" : "1.5px solid #E4E7ED",
+                cursor: "pointer",
+                transition: "all 0.22s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                position: "relative",
+                boxShadow: theme === "dark" ? "none" : "0 4px 16px rgba(0,0,0,0.02)"
+              }}
+              onMouseEnter={e => { 
+                e.currentTarget.style.borderColor = glowColor; 
+                e.currentTarget.style.transform = "translateY(-3px)"; 
+                e.currentTarget.style.boxShadow = `0 8px 30px ${glowColor}25`; 
+              }}
+              onMouseLeave={e => { 
+                e.currentTarget.style.borderColor = theme === "dark" ? "#222942" : "#E4E7ED"; 
+                e.currentTarget.style.transform = "none"; 
+                e.currentTarget.style.boxShadow = theme === "dark" ? "none" : "0 4px 16px rgba(0,0,0,0.02)"; 
+              }}>
+              <div style={{ position:"absolute", top:24, right:24, color:"#515A70", fontSize:18 }}>→</div>
+              <div style={{ width:50, height:50, borderRadius:14, background: `${glowColor}18`, border: `1.5px solid ${glowColor}30`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, marginBottom:16 }}>
+                <span style={{ filter: `drop-shadow(0 0 3px ${glowColor})` }}>{p.icon}</span>
+              </div>
+              <div style={{ fontWeight:700, fontSize:16, color: theme === "dark" ? "#fff" : "#181C25", marginBottom:8 }}>{p.label}</div>
+              <div style={{ fontSize:14, color: theme === "dark" ? "#8E9AA8" : "#515A70", lineHeight:1.5 }}>{p.desc}</div>
+            </div>
+          );
+        })}
       </div>
-      <div className="mt-12 flex flex-wrap justify-center gap-8 md:gap-14">
-        {[["Active Requests",activeCount,C.coral],["Offices",OFFICES.length,C.slate],["Resolution Rate",`${resolvedRate}%`,C.green]].map(([l,v,col]) => (
+
+      <div className="mt-12 flex flex-wrap justify-center gap-8 md:gap-14" style={{ marginBottom: 40, zIndex: 1 }}>
+        {[["Active Requests",activeCount,C.coral],["Offices",OFFICES.length, theme === "dark" ? "#fff" : "#181C25"],["Resolution Rate",`${resolvedRate}%`,C.green]].map(([l,v,col]) => (
           <div key={l as string} style={{ textAlign:"center" }}>
-            <div style={{ fontSize:22, fontWeight:800, color:col as string }}>{v}</div>
-            <div style={{ fontSize:11, color:C.textMuted, letterSpacing:0.8, textTransform:"uppercase", fontWeight:600, marginTop:4 }}>{l as string}</div>
+            <div style={{ fontSize:22, fontWeight:800, color:col as string, filter: l === "Active Requests" ? `drop-shadow(0 0 4px ${C.coral}35)` : l === "Resolution Rate" ? `drop-shadow(0 0 4px ${C.green}35)` : "none" }}>{v}</div>
+            <div style={{ fontSize:11, color: theme === "dark" ? "#515A70" : "#7C8BA1", letterSpacing:0.8, textTransform:"uppercase", fontWeight:600, marginTop:4 }}>{l as string}</div>
           </div>
         ))}
       </div>
+
+
+
+      {/* Floating Interactive Toast */}
+      {localToast && (
+        <div style={{
+          position: "fixed",
+          bottom: 28,
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 1000,
+          background: "#181C25",
+          border: "1.5px solid #FF444F",
+          color: "#fff",
+          padding: "12px 20px",
+          borderRadius: 14,
+          fontWeight: 700,
+          fontSize: 13,
+          boxShadow: "0 8px 32px rgba(255,68,79,0.25)",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          animation: "slideup 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
+        }}>
+          <span style={{ fontSize: 16 }}>🔴</span>
+          <span>{localToast}</span>
+        </div>
+      )}
+
     </div>
   );
 }
 
 // ─── Top bar ──────────────────────────────────────────────────────────────────
-function TopBar({ portal, office, onBack, view, setView, onPortalChange }: { portal: string; office: string; onBack: () => void; view: string; setView: (v: string) => void; onPortalChange: (p: string) => void }) {
+function TopBar({ portal, office, onBack, view, setView, onPortalChange, theme, toggleTheme }: { portal: string; office: string; onBack: () => void; view: string; setView: (v: string) => void; onPortalChange: (p: string) => void; theme: "light" | "dark"; toggleTheme: () => void }) {
   const navItems = portal === "staff"
     ? [{ id:"requests", label:"My Requests", icon:"📋" }, { id:"new", label:"New Request", icon:"➕" }]
     : [
@@ -450,7 +1002,7 @@ function TopBar({ portal, office, onBack, view, setView, onPortalChange }: { por
           style={{ background:"#2A3042", color:"#fff", border:`1.5px solid ${C.slateLight}`, borderRadius:8, padding:"5px 12px", fontSize:12, fontWeight:700, fontFamily:F, outline:"none", cursor:"pointer" }}
         >
           <option value="staff">👤 Staff Member</option>
-          <option value="it">💻 IT Administrator</option>
+          <option value="it">💻 IT Admin</option>
           <option value="facilities">🔧 Facilities Management</option>
           <option value="admin">📋 Admin Office</option>
         </select>
@@ -468,6 +1020,30 @@ function TopBar({ portal, office, onBack, view, setView, onPortalChange }: { por
             {n.icon} {n.label}
           </button>
         ))}
+        {/* Dynamic Theme Switcher */}
+        <button
+          onClick={toggleTheme}
+          title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+          style={{
+            padding: "7px 12px",
+            borderRadius: 10,
+            border: "1.5px solid #2A3042",
+            background: "transparent",
+            color: "#9AA0B4",
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            fontFamily: F,
+            whiteSpace: "nowrap"
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = C.coral; e.currentTarget.style.color = "#fff"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "#2A3042"; e.currentTarget.style.color = "#9AA0B4"; }}
+        >
+          {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+        </button>
         <button onClick={onBack} style={{ padding:"7px 14px", borderRadius:10, border:`1px solid ${C.slateMid}`, background:"transparent", color:"#9AA0B4", fontSize:12, cursor:"pointer", fontFamily:F, whiteSpace:"nowrap" }}>
           ← Portals
         </button>
@@ -509,12 +1085,48 @@ const STEPS_PRESETS: Record<string, { label: string; text: string }[]> = {
   ]
 };
 
+// ─── Smart Department Recommendation Engine ───────────────────────────────────
+function getRecommendation(title: string, desc: string): string | null {
+  const text = `${title} ${desc}`.toLowerCase();
+  
+  // IT Admin triggers
+  const itKeywords = ["monitor", "display", "screen", "laptop", "pc", "desktop", "mouse", "keyboard", "printer", "wi-fi", "wifi", "internet", "network", "vpn", "slack", "password", "docking", "port", "phishing", "email", "outlook", "m365", "software", "hardware", "device", "cisco", "headset"];
+  // Facilities Management triggers
+  const facilitiesKeywords = ["ac", "air conditioning", "hvac", "leak", "water", "plumbing", "chair", "desk", "furniture", "light", "flickering light", "pest", "mouse", "room", "boardroom", "conference", "door", "badge", "lock", "key", "ceiling", "pantry", "fridge", "refrigerator", "sink"];
+  // Admin Office triggers
+  const adminKeywords = ["stationery", "supplies", "replenish", "paper", "pen", "notebook", "office setup", "courier", "package", "documents", "onboarding", "hr", "clearing", "cleaning", "washroom", "soap"];
+
+  const itCount = itKeywords.filter(k => text.includes(k)).length;
+  const facCount = facilitiesKeywords.filter(k => text.includes(k)).length;
+  const admCount = adminKeywords.filter(k => text.includes(k)).length;
+
+  if (itCount === 0 && facCount === 0 && admCount === 0) return null;
+
+  if (itCount >= facCount && itCount >= admCount) return "IT Admin";
+  if (facCount >= itCount && facCount >= admCount) return "Facilities Management";
+  return "Admin Office";
+}
+
 // ─── TICKET DETAIL PAGE ───────────────────────────────────────────────────────
 function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; onBack: () => void; onUpdate: (updated: Ticket) => void; isAdmin: boolean }) {
   const [newNote, setNewNote]       = useState("");
   const [isInternal, setIsInternal] = useState(false);
   const [technicianSel, setTechSel] = useState(ticket.technician);
   const [assignNote, setAssignNote] = useState("");
+
+  const deptsList = ["IT Admin", "Facilities Management", "Admin Office"];
+  const initialRedirectDept = deptsList.find(d => d !== ticket.dept) || "IT Admin";
+  const [redirectDept, setRedirectDept] = useState(initialRedirectDept);
+  const [redirectReason, setRedirectReason] = useState("");
+
+  React.useEffect(() => {
+    const defaultDept = ["IT Admin", "Facilities Management", "Admin Office"].find(d => d !== ticket.dept) || "IT Admin";
+    setRedirectDept(defaultDept);
+    setRedirectReason("");
+    setTechSel(ticket.technician);
+  }, [ticket.id, ticket.dept, ticket.technician]);
+
+  const recommendedDept = getRecommendation(ticket.title, ticket.description);
 
   const inp = { width:"100%", padding:"11px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:14, outline:"none", background:"#fff", boxSizing:"border-box", color:C.slate, fontFamily:F };
 
@@ -673,12 +1285,26 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
                       </div>
                       {e.type === "status" ? (
                         <div style={{ fontSize:13, color:C.textSub }}>
-                          {e.from && e.to ? (
+                          {e.from && e.to && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.from) && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.to) ? (
+                            <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                              <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
+                                <span style={{ fontSize:10, background:"#FFF0F1", color:C.coral, padding:"2px 8px", borderRadius:10, fontWeight:700, letterSpacing:0.5 }}>🔄 PORTAL REDIRECT</span>
+                                <span style={{ fontSize:12, fontWeight:600, color:C.textSub }}>
+                                  <span style={{ color: C.coral, fontWeight: 700 }}>{e.from}</span>
+                                  {" ➔ "}
+                                  <span style={{ color: C.green, fontWeight: 700 }}>{e.to}</span>
+                                </span>
+                              </div>
+                              {e.note && <div style={{ fontSize:13, color:C.text, background:"#FFF8F8", border:`1.5px solid ${C.coralMid}`, padding:"10px 14px", borderRadius:10, lineHeight:1.5 }}>{e.note}</div>}
+                            </div>
+                          ) : e.from && e.to ? (
                             <span>Status changed: <StaBadge s={e.from} /> → <StaBadge s={e.to} /></span>
                           ) : (
                             <span>Activity update</span>
                           )}
-                          {e.note && <div style={{ marginTop:4, fontSize:13, color:C.textSub, background:C.bg, padding:"8px 12px", borderRadius:8 }}>{e.note}</div>}
+                          {(!e.from || !e.to || !["IT Admin", "Facilities Management", "Admin Office"].includes(e.from) || !["IT Admin", "Facilities Management", "Admin Office"].includes(e.to)) && e.note && (
+                            <div style={{ marginTop:4, fontSize:13, color:C.textSub, background:C.bg, padding:"8px 12px", borderRadius:8 }}>{e.note}</div>
+                          )}
                         </div>
                       ) : (
                         <div style={{ fontSize:14, color:C.text, background:e.internal ? C.purpleLight : (e.by === ticket.staffName ? C.coralLight : C.bg), padding:"10px 14px", borderRadius:10, lineHeight:1.6 }}>{e.note}</div>
@@ -850,6 +1476,95 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
             </div>
           )}
 
+          {/* Cross-Department Redirection / Portal Assignment (admin only) */}
+          {isAdmin && (
+            <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
+              <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:14 }}>Cross-Department Redirect</div>
+              
+              <p style={{ fontSize:12, color:C.textSub, margin:"0 0 12px", lineHeight:1.45 }}>
+                If this request is misrouted, transfer it to another service desk portal. It will be reassigned instantly.
+              </p>
+
+              {recommendedDept && recommendedDept !== ticket.dept && (
+                <div style={{ background: recommendedDept === "IT Admin" ? "#F5F3FF" : recommendedDept === "Facilities Management" ? "#E6F4F2" : "#FFFBEB", border: `1px solid ${recommendedDept === "IT Admin" ? C.purple : recommendedDept === "Facilities Management" ? "#0F766E" : C.amber}`, borderRadius: 10, padding: "10px 12px", marginBottom: 12, fontSize: 11, display: "flex", alignItems: "flex-start", gap: 6, lineHeight:1.4 }}>
+                  <span style={{ fontSize:14 }}>💡</span>
+                  <div style={{ flex: 1, color: recommendedDept === "IT Admin" ? C.purple : recommendedDept === "Facilities Management" ? "#0F766E" : "#92400E" }}>
+                    <strong>System Recommendation:</strong> Description matches items handled by <strong>{recommendedDept}</strong>.
+                    <button 
+                      onClick={() => { setRedirectDept(recommendedDept); setRedirectReason(`Rerouted based on system suggestion for "${ticket.title}".`); }}
+                      style={{ display:"block", marginTop:6, background: "none", border: "none", color: C.coral, textDecoration: "underline", padding: 0, fontWeight: 700, fontSize:11, cursor: "pointer" }}
+                    >
+                      Quick apply recommendation
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <label style={{ fontSize:11, color:C.textSub, fontWeight:600, display:"block", marginBottom:4 }}>Select Destination Portal:</label>
+              <select value={redirectDept} onChange={e => setRedirectDept(e.target.value)}
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:13, background:"#fff", color:C.slate, fontFamily:F, outline:"none", marginBottom:12 }}>
+                {["IT Admin", "Facilities Management", "Admin Office"].map(d => (
+                  <option key={d} disabled={d === ticket.dept}>{d} {d === ticket.dept ? "(Current)" : ""}</option>
+                ))}
+              </select>
+
+              <label style={{ fontSize:11, color:C.textSub, fontWeight:600, display:"block", marginBottom:4 }}>Reason for Transfer:</label>
+              
+              {/* Quick Preset Reasons */}
+              <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 8 }}>
+                {[
+                  { label: "Wrong Portal", val: "Misrouted ticket; request belongs to " },
+                  { label: "Hardware Issue", val: "Requires dedicated hardware specialist from " },
+                  { label: "Office Supplies", val: "Relates to general office supplies/administration." }
+                ].map((preset, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setRedirectReason(preset.val + (redirectDept === ticket.dept ? "another team" : redirectDept) + ".")}
+                    style={{ padding: "3px 8px", borderRadius: 6, border: `1.5px solid ${C.border}`, background: "#fff", fontSize: 10, color: C.textSub, fontWeight: 600, cursor: "pointer" }}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+
+              <textarea 
+                value={redirectReason} 
+                onChange={e => setRedirectReason(e.target.value)} 
+                placeholder="Explain why you are redirecting this ticket..."
+                style={{ ...inp, minHeight:60, fontSize:12, padding:"8px 12px", marginBottom:12, resize:"vertical" }} 
+              />
+
+              <button 
+                onClick={() => {
+                  if (redirectDept === ticket.dept) return;
+                  const reasonText = redirectReason.trim() ? redirectReason.trim() : "Transferred to correct department.";
+                  const entry: ThreadEntry = {
+                    type: "status",
+                    from: ticket.dept,
+                    to: redirectDept,
+                    by: "Admin (Redirected)",
+                    time: new Date().toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }),
+                    note: `Portal redirect reason: ${reasonText}`
+                  };
+                  
+                  const updated: Ticket = {
+                    ...ticket,
+                    dept: redirectDept,
+                    technician: "Unassigned", // reset assignee since department changed
+                    thread: [...ticket.thread, entry]
+                  };
+                  onUpdate(updated);
+                  onBack(); // Return to list cleanly
+                }}
+                disabled={redirectDept === ticket.dept}
+                style={{ width:"100%", padding:"10px", borderRadius:10, border:"none", background:C.coral, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:13, fontFamily:F, opacity: redirectDept === ticket.dept ? 0.5 : 1 }}
+              >
+                🔄 Redirect & Transfer
+              </button>
+            </div>
+          )}
+
           {/* Priority */}
           <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
             <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:12 }}>Urgency</div>
@@ -956,6 +1671,8 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
   const [priority, setPriority] = useState("Medium");
   const [description, setDescription] = useState("");
   
+  const recommendedDept = getRecommendation(title, description);
+  
   const [staffName, setStaffName] = useState("Amir Syarif");
   const [staffId, setStaffId] = useState("DRV-08422");
   const [email, setEmail] = useState("amir.syarif@deriv.com");
@@ -1046,6 +1763,21 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
               <option>Facilities Management</option>
               <option>Admin Office</option>
             </select>
+            {recommendedDept && recommendedDept !== dept && (
+              <div style={{ marginTop: 8, padding: "10px 12px", borderRadius: 8, background: "#FFFBEB", border: "1.5px solid #FDE68A", fontSize: 12, lineHeight: 1.45 }}>
+                <span style={{ fontSize:14, marginRight: 4 }}>💡</span>
+                <span style={{ color: "#92400E" }}>
+                  <strong>Smart Routing Suggestion:</strong> Your description matches requests normally handled by <strong>{recommendedDept}</strong>.
+                </span>
+                <button 
+                  type="button"
+                  onClick={() => setDept(recommendedDept)}
+                  style={{ display: "block", marginTop: 4, background: "none", border: "none", color: C.coral, fontWeight: 700, padding: 0, cursor: "pointer", textDecoration: "underline", fontSize: 11 }}
+                >
+                  Switch department to {recommendedDept}
+                </button>
+              </div>
+            )}
           </div>
           <div>
             <label style={lbl}>Category <span style={{ color:C.coral }}>*</span></label>
@@ -1295,6 +2027,7 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
 
 // ─── Root App ─────────────────────────────────────────────────────────────────
 export default function App() {
+  const [theme, setTheme]         = useState<"light" | "dark">("light");
   const [portal, setPortal]       = useState<string | null>(null);
   const [office, setOffice]       = useState("Cyberjaya, Malaysia (HQ)");
   const [view, setView]           = useState("requests");
@@ -1302,6 +2035,9 @@ export default function App() {
   const [openTicket, setOpenTicket] = useState<Ticket | null>(null);
   const [toast, setToast]         = useState<string | null>(null);
   const [ticketStore, setTicketStore] = useState<Record<string, Ticket[]>>(BASE_TICKETS);
+
+  // Sync global Proxy variable with React's state
+  currentTheme = theme;
 
   const tickets = ticketStore[office] || [];
   const activeTicket = openTicket ? (tickets.find(t => t.id === openTicket.id) || openTicket) : null;
@@ -1332,15 +2068,17 @@ export default function App() {
     setSubmitted(true);
   };
 
-  if (!portal) return <PortalSelector onSelect={p => { setPortal(p); setView(p==="staff"?"requests":"incoming"); }} office={office} setOffice={setOffice} />;
+  const toggleTheme = () => setTheme(prev => prev === "light" ? "dark" : "light");
+
+  if (!portal) return <PortalSelector onSelect={p => { setPortal(p); setView(p==="staff"?"requests":"incoming"); }} office={office} setOffice={setOffice} theme={theme} toggleTheme={toggleTheme} />;
 
   const isAdmin = portal !== "staff";
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:C.bg, fontFamily:F }}>
+    <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:C.bg, fontFamily:F, transition: "background 0.2s ease-out, color 0.2s ease-out" }}>
       {toast && <Toast msg={toast} onDone={() => setToast(null)} />}
       <style>{`@keyframes slideup { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }`}</style>
-      <TopBar portal={portal} office={office} onPortalChange={p => { setPortal(p); setView(p === "staff" ? "requests" : "incoming"); }} onBack={() => { setPortal(null); setView("requests"); setSubmitted(false); setOpenTicket(null); }} view={view} setView={v => { setView(v); setSubmitted(false); setOpenTicket(null); }} />
+      <TopBar portal={portal} office={office} onPortalChange={p => { setPortal(p); setView(p === "staff" ? "requests" : "incoming"); }} onBack={() => { setPortal(null); setView("requests"); setSubmitted(false); setOpenTicket(null); }} view={view} setView={v => { setView(v); setSubmitted(false); setOpenTicket(null); }} theme={theme} toggleTheme={toggleTheme} />
       <Page>
         {/* Staff flows */}
         {portal === "staff" && view === "requests" && !activeTicket && <RequestHistory tickets={tickets} office={office} onOpenTicket={t => setOpenTicket(t)} />}
@@ -1364,6 +2102,7 @@ export default function App() {
             office={office}
             deptFilter={deptMap[portal] || ""}
             title={titleMap[portal] || ""}
+            theme={theme}
           />
         )}
         {isAdmin && activeTicket && <TicketDetail ticket={activeTicket} onBack={() => setOpenTicket(null)} onUpdate={handleUpdate} isAdmin={true} />}

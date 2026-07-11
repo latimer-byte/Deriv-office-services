@@ -17,7 +17,7 @@ import {
 import { Ticket } from "../App";
 
 // ─── Deriv Brand Tokens ───────────────────────────────────────────────────────
-const C = {
+const C_LIGHT = {
   coral:       "#FF444F",
   coralDark:   "#D93540",
   coralLight:  "#FFF0F1",
@@ -42,6 +42,33 @@ const C = {
   blueLight:   "#EBF3FF",
   purple:      "#7C3AED",
   purpleLight: "#F5F3FF",
+};
+
+const C_DARK = {
+  coral:       "#FF444F",
+  coralDark:   "#FF5A65",
+  coralLight:  "#2D1C1E",
+  coralMid:    "#442426",
+  slate:       "#F4F5F7",
+  slateMid:    "#E4E7ED",
+  slateLight:  "#9AA0B4",
+  bg:          "#0E1118",
+  card:        "#161B26",
+  border:      "#222938",
+  borderLight: "#1C212E",
+  text:        "#F4F5F7",
+  textSub:     "#A0AEC0",
+  textMuted:   "#64748B",
+  green:       "#10B981",
+  greenLight:  "#112E24",
+  amber:       "#F59E0B",
+  amberLight:  "#2D2312",
+  red:         "#EF4444",
+  redLight:    "#2D1A1C",
+  blue:        "#3B82F6",
+  blueLight:   "#13253E",
+  purple:      "#8B5CF6",
+  purpleLight: "#231B36",
 };
 
 const F = "'Inter', Arial, sans-serif";
@@ -121,9 +148,11 @@ interface AdminDashboardProps {
   office: string;
   deptFilter: string;
   title: string;
+  theme?: "light" | "dark";
 }
 
-export default function AdminDashboard({ ticketStore, office, deptFilter, title }: AdminDashboardProps) {
+export default function AdminDashboard({ ticketStore, office, deptFilter, title, theme = "light" }: AdminDashboardProps) {
+  const C = theme === "dark" ? C_DARK : C_LIGHT;
   const [scope, setScope] = useState<"office" | "global">("office");
   const [metricDeptFilter, setMetricDeptFilter] = useState<string>("All");
 
@@ -170,10 +199,10 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
       : 92; // Benchmark baseline if no resolved tickets yet
 
     return [
-      { label: "Total Requests", value: total, bg: "#fff", border: C.border, icon: "📋", color: C.slate },
-      { label: "Active Pending", value: pending, bg: "#FFFBEB", border: "#FCD34D", icon: "⏳", color: C.amber },
-      { label: "Resolved", value: resolved, bg: "#E6FAF3", border: "#A7F3D0", icon: "✅", color: C.green },
-      { label: "SLA Compliance", value: `${slaRate}%`, bg: "#FFF0F1", border: C.coralMid, icon: "🎯", color: C.coral }
+      { label: "Total Requests", value: total, bg: C.card, border: C.border, icon: "📋", color: C.slate },
+      { label: "Active Pending", value: pending, bg: C.amberLight, border: C.amber + "30", icon: "⏳", color: C.amber },
+      { label: "Resolved", value: resolved, bg: C.greenLight, border: C.green + "30", icon: "✅", color: C.green },
+      { label: "SLA Compliance", value: `${slaRate}%`, bg: C.coralLight, border: C.coral + "30", icon: "🎯", color: C.coral }
     ];
   }, [activeTickets]);
 
@@ -245,6 +274,37 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
       .slice(0, 4);
   }, [activeTickets]);
 
+  // Redirections and Portal Transfers
+  const redirectionMetrics = useMemo(() => {
+    // For routing analytics, check rawTickets in scope to capture all redirections
+    const redirectedTickets = rawTickets.filter(t => 
+      t.thread.some(e => e.type === "status" && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.from || "") && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.to || ""))
+    );
+
+    const redirectCount = redirectedTickets.length;
+    const rate = rawTickets.length > 0 ? Math.round((redirectCount / rawTickets.length) * 100) : 0;
+
+    const destMap: Record<string, number> = { "IT Admin": 0, "Facilities Management": 0, "Admin Office": 0 };
+    redirectedTickets.forEach(t => {
+      const lastRedirect = [...t.thread].reverse().find(e => e.type === "status" && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.from || "") && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.to || ""));
+      if (lastRedirect && lastRedirect.to) {
+        destMap[lastRedirect.to] = (destMap[lastRedirect.to] || 0) + 1;
+      }
+    });
+
+    const destData = Object.entries(destMap).map(([name, value]) => ({
+      name: name === "Facilities Management" ? "Facilities" : name,
+      value
+    }));
+
+    return {
+      redirectedTickets,
+      redirectCount,
+      rate,
+      destData
+    };
+  }, [rawTickets]);
+
   return (
     <div style={{ animation: "slideup 0.4s ease-out" }}>
       {/* Upper header section */}
@@ -263,7 +323,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
 
         {/* Scope and Department Toggles */}
         <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-          <div style={{ display: "flex", background: "#fff", border: `1.5px solid ${C.border}`, borderRadius: 10, padding: 3 }}>
+          <div style={{ display: "flex", background: C.card, border: `1.5px solid ${C.border}`, borderRadius: 10, padding: 3 }}>
             <button
               onClick={() => setScope("office")}
               style={{
@@ -274,7 +334,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
                 fontWeight: 600,
                 cursor: "pointer",
                 background: scope === "office" ? C.slate : "transparent",
-                color: scope === "office" ? "#fff" : C.textSub,
+                color: scope === "office" ? (theme === "dark" ? "#181C25" : "#fff") : C.textSub,
                 fontFamily: F,
                 transition: "all 0.1s"
               }}
@@ -291,7 +351,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
                 fontWeight: 600,
                 cursor: "pointer",
                 background: scope === "global" ? C.slate : "transparent",
-                color: scope === "global" ? "#fff" : C.textSub,
+                color: scope === "global" ? (theme === "dark" ? "#181C25" : "#fff") : C.textSub,
                 fontFamily: F,
                 transition: "all 0.1s"
               }}
@@ -300,7 +360,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
             </button>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#fff", border: `1.5px solid ${C.border}`, borderRadius: 10, padding: "3px 10px 3px 3px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, background: C.card, border: `1.5px solid ${C.border}`, borderRadius: 10, padding: "3px 10px 3px 3px" }}>
             <span style={{ fontSize: 11, color: C.textMuted, fontWeight: 700, textTransform: "uppercase", paddingLeft: 8 }}>Dept:</span>
             <select
               value={metricDeptFilter}
@@ -355,7 +415,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         
         {/* Ticket Volume Trends */}
-        <div className="lg:col-span-2 bg-[#fff]" style={{ borderRadius: 16, border: `1.5px solid ${C.border}`, padding: "24px", boxShadow: "0 2px 8px rgba(24,28,37,0.02)" }}>
+        <div className="lg:col-span-2" style={{ background: C.card, borderRadius: 16, border: `1.5px solid ${C.border}`, padding: "24px", boxShadow: "0 2px 8px rgba(24,28,37,0.02)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
             <div>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: C.slate, margin: "0 0 4px" }}>Ticket Volume Trends</h3>
@@ -384,7 +444,8 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
                 <XAxis dataKey="name" stroke={C.textMuted} fontSize={11} tickLine={false} />
                 <YAxis stroke={C.textMuted} fontSize={11} tickLine={false} axisLine={false} />
                 <Tooltip 
-                  contentStyle={{ background: "#fff", borderRadius: 12, border: `1.5px solid ${C.border}`, fontFamily: F }}
+                  contentStyle={{ background: C.card, borderRadius: 12, border: `1.5px solid ${C.border}`, fontFamily: F }}
+                  itemStyle={{ color: C.text }}
                   labelStyle={{ fontWeight: 700, color: C.slate }}
                 />
                 <Area type="monotone" dataKey="Requests" stroke={C.coral} strokeWidth={2.5} fillOpacity={1} fill="url(#colorVolume)" />
@@ -395,7 +456,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
         </div>
 
         {/* Priority Distribution */}
-        <div style={{ background: "#fff", borderRadius: 16, border: `1.5px solid ${C.border}`, padding: "24px", boxShadow: "0 2px 8px rgba(24,28,37,0.02)", display: "flex", flexDirection: "column" }}>
+        <div style={{ background: C.card, borderRadius: 16, border: `1.5px solid ${C.border}`, padding: "24px", boxShadow: "0 2px 8px rgba(24,28,37,0.02)", display: "flex", flexDirection: "column" }}>
           <div>
             <h3 style={{ fontSize: 16, fontWeight: 700, color: C.slate, margin: "0 0 4px" }}>Urgency Breakdown</h3>
             <p style={{ fontSize: 12, color: C.textSub, margin: 0 }}>Current ticket priority ratio</p>
@@ -421,7 +482,8 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
                     ))}
                   </Pie>
                   <Tooltip 
-                    contentStyle={{ background: "#fff", borderRadius: 12, border: `1.5px solid ${C.border}`, fontFamily: F }}
+                    contentStyle={{ background: C.card, borderRadius: 12, border: `1.5px solid ${C.border}`, fontFamily: F }}
+                    itemStyle={{ color: C.text }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -453,7 +515,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Resolution Time Comparison by Department */}
-        <div style={{ background: "#fff", borderRadius: 16, border: `1.5px solid ${C.border}`, padding: "24px", boxShadow: "0 2px 8px rgba(24,28,37,0.02)" }}>
+        <div style={{ background: C.card, borderRadius: 16, border: `1.5px solid ${C.border}`, padding: "24px", boxShadow: "0 2px 8px rgba(24,28,37,0.02)" }}>
           <div>
             <h3 style={{ fontSize: 16, fontWeight: 700, color: C.slate, margin: "0 0 4px" }}>Average Resolution Time</h3>
             <p style={{ fontSize: 12, color: C.textSub, margin: "0 0 20px" }}>Actual performance vs. SLA targets (hours)</p>
@@ -466,7 +528,8 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
                 <XAxis dataKey="department" stroke={C.textMuted} fontSize={11} tickLine={false} />
                 <YAxis stroke={C.textMuted} fontSize={11} tickLine={false} axisLine={false} />
                 <Tooltip 
-                  contentStyle={{ background: "#fff", borderRadius: 12, border: `1.5px solid ${C.border}`, fontFamily: F }}
+                  contentStyle={{ background: C.card, borderRadius: 12, border: `1.5px solid ${C.border}`, fontFamily: F }}
+                  itemStyle={{ color: C.text }}
                 />
                 <Legend iconSize={10} iconType="circle" wrapperStyle={{ fontSize: 12, marginTop: 10 }} />
                 <Bar dataKey="Resolution Time (hrs)" fill={C.coral} radius={[6, 6, 0, 0]} maxBarSize={32} />
@@ -477,7 +540,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
         </div>
 
         {/* Urgent Action Queue (SLA warnings) */}
-        <div style={{ background: "#fff", borderRadius: 16, border: `1.5px solid ${C.border}`, padding: "24px", boxShadow: "0 2px 8px rgba(24,28,37,0.02)", display: "flex", flexDirection: "column" }}>
+        <div style={{ background: C.card, borderRadius: 16, border: `1.5px solid ${C.border}`, padding: "24px", boxShadow: "0 2px 8px rgba(24,28,37,0.02)", display: "flex", flexDirection: "column" }}>
           <div>
             <h3 style={{ fontSize: 16, fontWeight: 700, color: C.slate, margin: "0 0 4px" }}>Action Required (SLA Warnings)</h3>
             <p style={{ fontSize: 12, color: C.textSub, margin: "0 0 16px" }}>Unassigned Critical / High urgency tickets</p>
@@ -535,6 +598,79 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title 
         </div>
 
       </div>
+
+      {/* Portal Reassignment & Queue Optimization */}
+      <div style={{ marginTop: 24, background: C.card, borderRadius: 16, border: `1.5px solid ${C.border}`, padding: "24px", boxShadow: "0 2px 8px rgba(24,28,37,0.02)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, flexWrap: "wrap", gap: 12 }}>
+          <div>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: C.slate, margin: "0 0 4px" }}>🔄 Portal Reassignment & Queue Optimization</h3>
+            <p style={{ fontSize: 12, color: C.textSub, margin: 0 }}>Cross-department routing log and deflection performance indicators</p>
+          </div>
+          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+            <div style={{ fontSize: 12, color: C.textSub, background: C.bg, padding: "6px 12px", borderRadius: 8, fontWeight: 600 }}>
+              Total Reassigned: <span style={{ color: C.coral, fontWeight: 800 }}>{redirectionMetrics.redirectCount}</span> ({redirectionMetrics.rate}% of overall queue)
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Deflection / Destination Stats */}
+          <div style={{ background: C.bg, borderRadius: 12, padding: "18px", display: "flex", flexDirection: "column" }}>
+            <span style={{ fontSize: 11, color: C.textSub, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.6, marginBottom: 12, display: "block" }}>REDIRECTION TARGET VOLUME</span>
+            <div style={{ display: "flex", flex: 1, flexDirection: "column", gap: 14, justifyContent: "center" }}>
+              {redirectionMetrics.destData.map(d => {
+                const total = redirectionMetrics.redirectCount || 1;
+                const pct = Math.round((d.value / total) * 100);
+                return (
+                  <div key={d.name}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: C.slate, marginBottom: 4 }}>
+                      <span>{d.name} Desk</span>
+                      <span>{d.value} ({pct}%)</span>
+                    </div>
+                    <div style={{ width: "100%", height: 8, background: "#E4E7ED", borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{ width: `${pct}%`, height: "100%", background: d.name.includes("IT") ? C.purple : d.name.includes("Facilities") ? "#0F766E" : C.coral, borderRadius: 4 }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Active Redirection Log */}
+          <div className="lg:col-span-2" style={{ border: `1.5px dashed ${C.border}`, borderRadius: 12, padding: "18px", overflow: "hidden" }}>
+            <span style={{ fontSize: 11, color: C.textSub, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.6, display: "block", marginBottom: 12 }}>CROSS-DEPARTMENT TRANSFERS AUDIT TRAIL</span>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, maxHeight: "170px", overflowY: "auto" }}>
+              {redirectionMetrics.redirectedTickets.length === 0 ? (
+                <div style={{ textAlign: "center", color: C.textMuted, fontSize: 12, padding: "32px 0" }}>
+                  💡 No tickets have been redirected yet. Simulate a misrouting by redirecting a ticket in the details view!
+                </div>
+              ) : (
+                [...redirectionMetrics.redirectedTickets].reverse().map(t => {
+                  const redirectEntry = t.thread.find(e => e.type === "status" && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.from || "") && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.to || ""));
+                  return (
+                    <div key={t.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.card, padding: "10px 12px", borderRadius: 10, border: `1px solid ${C.borderLight}` }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 2, maxWidth: "60%" }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: C.slate, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.title}</span>
+                        <span style={{ fontSize: 11, color: C.textSub }}>{t.id} · Requester: {t.staffName}</span>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, display: "flex", alignItems: "center", gap: 4, justifyContent: "flex-end" }}>
+                          <span style={{ color: C.coral }}>{redirectEntry?.from === "Facilities Management" ? "Facilities" : redirectEntry?.from}</span>
+                          <span>➔</span>
+                          <span style={{ color: C.green }}>{redirectEntry?.to === "Facilities Management" ? "Facilities" : redirectEntry?.to}</span>
+                        </div>
+                        <div style={{ fontSize: 10, color: C.textMuted, marginTop: 2 }}>{redirectEntry?.time}</div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
