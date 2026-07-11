@@ -1,0 +1,6 @@
+{
+  "name": "Deriv Office Services",
+  "description": "An office services and ticketing desk portal supporting multiple office locations, enabling staff requests and administrative resolution workflows.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
