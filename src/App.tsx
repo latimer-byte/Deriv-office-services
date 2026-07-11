@@ -1,6 +1,21 @@
 import React, { useState } from "react";
 import AdminDashboard from "./components/AdminDashboard";
 
+import neonCyprus from "./assets/images/neon_cyprus_1783766539962.jpg";
+import neonMalta from "./assets/images/neon_malta_1783766550652.jpg";
+import neonRwanda from "./assets/images/neon_rwanda_1783766561662.jpg";
+import neonMalaysia from "./assets/images/neon_malaysia_1783766573318.jpg";
+import neonParaguay from "./assets/images/neon_paraguay_1783766584359.jpg";
+import neonLondon from "./assets/images/neon_london_1783766593631.jpg";
+import neonDubai from "./assets/images/neon_dubai_1783766603861.jpg";
+import neonParis from "./assets/images/neon_paris_1783767894468.jpg";
+import neonBerlin from "./assets/images/neon_berlin_1783767908842.jpg";
+import neonGuernsey from "./assets/images/neon_guernsey_1783767921351.jpg";
+import neonSingapore from "./assets/images/neon_singapore_1783767878394.jpg";
+import neonCayman from "./assets/images/neon_cayman_1783767936674.jpg";
+import neonVanuatu from "./assets/images/neon_vanuatu_1783767949363.jpg";
+import neonMauritius from "./assets/images/neon_mauritius_1783767963307.jpg";
+
 // ─── Types and Interfaces ────────────────────────────────────────────────────
 export interface ThreadEntry {
   type: string; // "status" | "comment"
@@ -406,7 +421,7 @@ const NEON_LOCATIONS = [
     city: "Limassol",
     flag: "🇨🇾",
     staff: "142 Staff",
-    image: "/src/assets/images/neon_cyprus_1783766539962.jpg",
+    image: neonCyprus,
     color: "#F97316", // Vibrant orange
     shadow: "rgba(249,115,22,0.35)",
     officeValue: "Limassol, Cyprus"
@@ -416,7 +431,7 @@ const NEON_LOCATIONS = [
     city: "St. Julian's",
     flag: "🇲🇹",
     staff: "128 Staff",
-    image: "/src/assets/images/neon_malta_1783766550652.jpg",
+    image: neonMalta,
     color: "#EC4899", // Glowing pink
     shadow: "rgba(236,72,153,0.35)",
     officeValue: "Birkirkara, Malta"
@@ -426,7 +441,7 @@ const NEON_LOCATIONS = [
     city: "Kigali",
     flag: "🇷🇼",
     staff: "156 Staff",
-    image: "/src/assets/images/neon_rwanda_1783766561662.jpg",
+    image: neonRwanda,
     color: "#10B981", // Emerald green
     shadow: "rgba(16,185,129,0.35)",
     officeValue: "Kigali, Rwanda"
@@ -436,7 +451,7 @@ const NEON_LOCATIONS = [
     city: "Cyberjaya",
     flag: "🇲🇾",
     staff: "198 Staff",
-    image: "/src/assets/images/neon_malaysia_1783766573318.jpg",
+    image: neonMalaysia,
     color: "#3B82F6", // Cyan blue
     shadow: "rgba(59,130,246,0.35)",
     officeValue: "Cyberjaya, Malaysia (HQ)"
@@ -446,7 +461,7 @@ const NEON_LOCATIONS = [
     city: "Asunción",
     flag: "🇵🇾",
     staff: "96 Staff",
-    image: "/src/assets/images/neon_paraguay_1783766584359.jpg",
+    image: neonParaguay,
     color: "#EF4444", // Neon red
     shadow: "rgba(239,68,68,0.35)",
     officeValue: "Asunción, Paraguay"
@@ -456,7 +471,7 @@ const NEON_LOCATIONS = [
     city: "London",
     flag: "🇬🇧",
     staff: "113 Staff",
-    image: "/src/assets/images/neon_london_1783766593631.jpg",
+    image: neonLondon,
     color: "#EAB308", // Sun yellow
     shadow: "rgba(234,179,8,0.35)",
     officeValue: "London, UK"
@@ -466,7 +481,7 @@ const NEON_LOCATIONS = [
     city: "Dubai",
     flag: "🇦🇪",
     staff: "134 Staff",
-    image: "/src/assets/images/neon_dubai_1783766603861.jpg",
+    image: neonDubai,
     color: "#A855F7", // Purple neon
     shadow: "rgba(168,85,247,0.35)",
     officeValue: "Dubai – JLT, UAE"
@@ -476,7 +491,7 @@ const NEON_LOCATIONS = [
     city: "Paris",
     flag: "🇫🇷",
     staff: "105 Staff",
-    image: "/src/assets/images/neon_paris_1783767894468.jpg",
+    image: neonParis,
     color: "#2563EB", // Blue glow
     shadow: "rgba(37,99,235,0.35)",
     officeValue: "Paris, France"
@@ -486,7 +501,7 @@ const NEON_LOCATIONS = [
     city: "Berlin",
     flag: "🇩🇪",
     staff: "89 Staff",
-    image: "/src/assets/images/neon_berlin_1783767908842.jpg",
+    image: neonBerlin,
     color: "#F59E0B", // Amber glow
     shadow: "rgba(245,158,11,0.35)",
     officeValue: "Berlin, Germany"
@@ -496,7 +511,7 @@ const NEON_LOCATIONS = [
     city: "St. Peter Port",
     flag: "🇬🇬",
     staff: "62 Staff",
-    image: "/src/assets/images/neon_guernsey_1783767921351.jpg",
+    image: neonGuernsey,
     color: "#10B981", // Emerald green glow
     shadow: "rgba(16,185,129,0.35)",
     officeValue: "Guernsey, Channel Islands"
@@ -506,7 +521,7 @@ const NEON_LOCATIONS = [
     city: "Singapore",
     flag: "🇸🇬",
     staff: "120 Staff",
-    image: "/src/assets/images/neon_singapore_1783767878394.jpg",
+    image: neonSingapore,
     color: "#EC4899", // Pink glow
     shadow: "rgba(236,72,153,0.35)",
     officeValue: "Singapore"
@@ -516,7 +531,7 @@ const NEON_LOCATIONS = [
     city: "George Town",
     flag: "🇰🇾",
     staff: "45 Staff",
-    image: "/src/assets/images/neon_cayman_1783767936674.jpg",
+    image: neonCayman,
     color: "#06B6D4", // Cyan glow
     shadow: "rgba(6,182,212,0.35)",
     officeValue: "George Town, Cayman Islands"
@@ -526,7 +541,7 @@ const NEON_LOCATIONS = [
     city: "Port Vila",
     flag: "🇻🇺",
     staff: "38 Staff",
-    image: "/src/assets/images/neon_vanuatu_1783767949363.jpg",
+    image: neonVanuatu,
     color: "#F43F5E", // Rose glow
     shadow: "rgba(244,63,94,0.35)",
     officeValue: "Port Vila, Vanuatu"
@@ -536,7 +551,7 @@ const NEON_LOCATIONS = [
     city: "Port Louis",
     flag: "🇲🇺",
     staff: "55 Staff",
-    image: "/src/assets/images/neon_mauritius_1783767963307.jpg",
+    image: neonMauritius,
     color: "#8B5CF6", // Purple glow
     shadow: "rgba(139,92,246,0.35)",
     officeValue: "Mauritius"
