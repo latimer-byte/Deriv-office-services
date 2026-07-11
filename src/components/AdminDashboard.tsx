@@ -71,7 +71,7 @@ const C_DARK = {
   purpleLight: "#231B36",
 };
 
-const F = "'Inter', Arial, sans-serif";
+const F = "'Plus Jakarta Sans', 'Outfit', 'Inter', sans-serif";
 
 export function parseThreadTime(str: string, yearDefault = 2024): Date {
   if (!str) return new Date();

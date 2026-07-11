@@ -109,7 +109,7 @@ export const C = new Proxy({} as typeof C_LIGHT, {
     return active[prop as keyof typeof C_LIGHT];
   }
 });
-const F = "'Inter', Arial, sans-serif";
+const F = "'Plus Jakarta Sans', 'Outfit', 'Inter', sans-serif";
 
 // ─── Status workflow order ────────────────────────────────────────────────────
 const STATUS_FLOW = ["Submitted", "Assigned", "In Progress", "Resolved", "Closed"];
@@ -399,7 +399,7 @@ function Toast({ msg, onDone }: { msg: string; onDone: () => void }) {
     return () => clearTimeout(t);
   }, [onDone]);
   return (
-    <div style={{ position:"fixed", bottom:28, right:28, zIndex:999, background:C.slate, color:"#fff", padding:"14px 22px", borderRadius:14, fontSize:13, fontWeight:600, boxShadow:"0 8px 32px rgba(0,0,0,0.25)", display:"flex", alignItems:"center", gap:10, maxWidth:360, animation:"slideup 0.25s ease" }}>
+    <div style={{ position:"fixed", bottom:28, right:28, zIndex:999, background:C.slate, color: currentTheme === "dark" ? "#0F172A" : "#fff", padding:"14px 22px", borderRadius:14, fontSize:13, fontWeight:600, boxShadow:"0 8px 32px rgba(0,0,0,0.25)", display:"flex", alignItems:"center", gap:10, maxWidth:360, animation:"slideup 0.25s ease" }}>
       <span style={{ fontSize:18 }}>✉️</span>
       <span>{msg}</span>
     </div>
@@ -691,7 +691,6 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
               const prevIdx = (activeLocationIdx - 1 + NEON_LOCATIONS.length) % NEON_LOCATIONS.length;
               setActiveLocationIdx(prevIdx);
               setOffice(NEON_LOCATIONS[prevIdx].officeValue);
-              setLocalToast(`📍 Connected to ${NEON_LOCATIONS[prevIdx].city} Office Services subnet`);
             }}
             style={{
               position: "absolute",
@@ -724,7 +723,6 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
               const nextIdx = (activeLocationIdx + 1) % NEON_LOCATIONS.length;
               setActiveLocationIdx(nextIdx);
               setOffice(NEON_LOCATIONS[nextIdx].officeValue);
-              setLocalToast(`📍 Connected to ${NEON_LOCATIONS[nextIdx].city} Office Services subnet`);
             }}
             style={{
               position: "absolute",
@@ -995,7 +993,7 @@ function TopBar({ portal, office, onBack, view, setView, onPortalChange, theme, 
         { id:"dashboard", label:"Dashboard", icon:"📊" }
       ];
   return (
-    <div className="bg-[#181C25] border-b border-[#2A3042] px-4 md:px-8 py-3 md:py-0 md:h-[60px] flex flex-col md:flex-row md:items-center gap-3 md:gap-5 sticky top-0 z-20" style={{ fontFamily:F }}>
+    <div className="bg-[#181C25] border-b border-[#2A3042] px-4 md:px-8 py-3.5 md:py-2.5 md:min-h-[60px] md:h-auto flex flex-col md:flex-row md:flex-wrap lg:flex-nowrap md:items-center justify-between gap-3 md:gap-4 sticky top-0 z-20" style={{ fontFamily:F }}>
       <div className="flex items-center gap-2 cursor-pointer" onClick={onBack}>
         <div style={{ width:28, height:28, borderRadius:7, background:C.coral, display:"flex", alignItems:"center", justifyContent:"center" }}>
           <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
@@ -1014,24 +1012,24 @@ function TopBar({ portal, office, onBack, view, setView, onPortalChange, theme, 
         <select 
           value={portal} 
           onChange={e => onPortalChange(e.target.value)}
-          style={{ background:"#2A3042", color:"#fff", border:`1.5px solid ${C.slateLight}`, borderRadius:8, padding:"5px 12px", fontSize:12, fontWeight:700, fontFamily:F, outline:"none", cursor:"pointer" }}
+          style={{ background:"#2A3042", color:"#fff", border:`1.5px solid ${C.slateLight}`, borderRadius:8, padding:"4px 10px", fontSize:12, fontWeight:700, fontFamily:F, outline:"none", cursor:"pointer" }}
         >
-          <option value="staff">👤 Staff Member</option>
+          <option value="staff">👤 Staff Portal</option>
           <option value="it">💻 IT Admin</option>
-          <option value="facilities">🔧 Facilities Management</option>
+          <option value="facilities">🔧 Facilities</option>
           <option value="admin">📋 Admin Office</option>
         </select>
       </div>
 
       <div className="hidden lg:block flex-1" />
-      <div className="hidden sm:flex px-3 py-1.5 rounded-full bg-[#2A3042] text-[#9AA0B4] text-xs font-semibold items-center gap-1.5 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+      <div className="hidden sm:flex px-3 py-1 rounded-full bg-[#2A3042] text-[#9AA0B4] text-xs font-semibold items-center gap-1.5 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
         <span>📍</span>{office.split(",")[0]}
       </div>
       
       <div className="flex flex-wrap items-center gap-2">
         {navItems.map(n => (
           <button key={n.id} onClick={() => setView(n.id)}
-            style={{ padding:"7px 14px", borderRadius:10, border:`1.5px solid ${view===n.id ? C.coral : C.slateMid}`, background:view===n.id ? C.coral : "transparent", color:view===n.id ? "#fff" : "#9AA0B4", fontSize:13, fontWeight:600, cursor:"pointer", fontFamily:F, whiteSpace:"nowrap" }}>
+            style={{ padding:"6px 12px", borderRadius:8, border:`1.5px solid ${view===n.id ? C.coral : C.slateMid}`, background:view===n.id ? C.coral : "transparent", color:view===n.id ? "#fff" : "#9AA0B4", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:F, whiteSpace:"nowrap" }}>
             {n.icon} {n.label}
           </button>
         ))}
@@ -1040,12 +1038,12 @@ function TopBar({ portal, office, onBack, view, setView, onPortalChange, theme, 
           onClick={toggleTheme}
           title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
           style={{
-            padding: "7px 12px",
-            borderRadius: 10,
+            padding: "6px 10px",
+            borderRadius: 8,
             border: "1.5px solid #2A3042",
             background: "transparent",
             color: "#9AA0B4",
-            fontSize: 13,
+            fontSize: 12,
             fontWeight: 600,
             cursor: "pointer",
             display: "flex",
@@ -1059,7 +1057,7 @@ function TopBar({ portal, office, onBack, view, setView, onPortalChange, theme, 
         >
           {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
         </button>
-        <button onClick={onBack} style={{ padding:"7px 14px", borderRadius:10, border:`1px solid ${C.slateMid}`, background:"transparent", color:"#9AA0B4", fontSize:12, cursor:"pointer", fontFamily:F, whiteSpace:"nowrap" }}>
+        <button onClick={onBack} style={{ padding:"6px 12px", borderRadius:8, border:`1px solid ${C.slateMid}`, background:"transparent", color:"#9AA0B4", fontSize:12, cursor:"pointer", fontFamily:F, whiteSpace:"nowrap" }}>
           ← Portals
         </button>
       </div>
@@ -1143,7 +1141,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
 
   const recommendedDept = getRecommendation(ticket.title, ticket.description);
 
-  const inp = { width:"100%", padding:"11px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:14, outline:"none", background:"#fff", boxSizing:"border-box", color:C.slate, fontFamily:F };
+  const inp = { width:"100%", padding:"11px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:14, outline:"none", background:C.card, boxSizing:"border-box", color:C.slate, fontFamily:F };
 
   const currentIdx = STATUS_FLOW.indexOf(ticket.status);
   const canAdvance = currentIdx < STATUS_FLOW.length - 1;
@@ -1210,7 +1208,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
         {/* ── LEFT: main thread ── */}
         <div style={{ flex:1, minWidth:320, display:"flex", flexDirection:"column", gap:20 }}>
           {/* Header card */}
-          <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"24px 28px" }}>
+          <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"24px 28px" }}>
             <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:12 }}>
               <PriBadge p={ticket.priority} />
               <StaBadge s={ticket.status} />
@@ -1226,7 +1224,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
           </div>
 
           {/* Staff & Asset info */}
-          <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 28px" }}>
+          <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 28px" }}>
             <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:14 }}>Staff & Asset Details</div>
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
               {[
@@ -1245,7 +1243,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
 
           {/* Bidirectional Feedback Message Hub */}
           {!isAdmin ? (
-            <div style={{ background:"#fff", borderRadius:16, border:`1.5px dashed ${C.coralMid}`, padding:"22px 28px" }}>
+            <div style={{ background:C.card, borderRadius:16, border:`1.5px dashed ${C.coralMid}`, padding:"22px 28px" }}>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
                 <span style={{ fontSize:18 }}>💬</span>
                 <span style={{ fontSize:14, fontWeight:700, color:C.slate }}>Message support team / Revert with update</span>
@@ -1273,7 +1271,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
                   setNewNote("");
                 }} 
                 disabled={!newNote.trim()}
-                style={{ padding:"10px 22px", borderRadius:10, border:"none", background:newNote.trim() ? C.slate : C.border, color:newNote.trim() ? "#fff" : C.textMuted, fontWeight:700, cursor:newNote.trim() ? "pointer" : "not-allowed", fontSize:13, fontFamily:F }}
+                style={{ padding:"10px 22px", borderRadius:10, border:"none", background:newNote.trim() ? C.slate : C.border, color:newNote.trim() ? (currentTheme === "dark" ? "#0F172A" : "#fff") : C.textMuted, fontWeight:700, cursor:newNote.trim() ? "pointer" : "not-allowed", fontSize:13, fontFamily:F }}
               >
                 Send reply to team
               </button>
@@ -1281,7 +1279,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
           ) : null}
 
           {/* Activity thread */}
-          <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 28px" }}>
+          <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 28px" }}>
             <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:18 }}>
               {isAdmin ? "Activity & Communications Log" : "Steps Taken Timeline"}
             </div>
@@ -1346,7 +1344,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
                         <button 
                           key={idx} 
                           onClick={() => { setNewNote(p.text); setIsInternal(false); }}
-                          style={{ padding:"4px 10px", borderRadius:6, border:`1px solid ${C.border}`, background:"#fff", fontSize:11, color:C.slate, cursor:"pointer", fontWeight:600 }}
+                          style={{ padding:"4px 10px", borderRadius:6, border:`1px solid ${C.border}`, background:C.card, fontSize:11, color:C.slate, cursor:"pointer", fontWeight:600 }}
                           onMouseEnter={e => e.currentTarget.style.borderColor = C.coral}
                           onMouseLeave={e => e.currentTarget.style.borderColor = C.border}
                         >
@@ -1386,7 +1384,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
           
           {/* Support representative status (For Staff Portal) */}
           {!isAdmin && (
-            <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
+            <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
               <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:12 }}>Assigned specialist</div>
               {ticket.technician && ticket.technician !== "Unassigned" ? (
                 <div>
@@ -1428,7 +1426,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
           )}
 
           {/* Status workflow */}
-          <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
+          <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
             <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:14 }}>Status workflow</div>
             <div style={{ display:"flex", flexDirection:"column", gap:6, marginBottom:16 }}>
               {STATUS_FLOW.map((s, i) => {
@@ -1436,7 +1434,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
                 const done = i < currentIdx;
                 const cfg = statusCfg(s);
                 return (
-                  <div key={s} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:10, background: cur ? cfg.bg : done ? "#F8F9FA" : "#fff", border:`1.5px solid ${cur ? cfg.dot : C.borderLight}` }}>
+                  <div key={s} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", borderRadius:10, background: cur ? cfg.bg : done ? (currentTheme === "dark" ? "#0F172A" : "#F8F9FA") : C.card, border:`1.5px solid ${cur ? cfg.dot : C.borderLight}` }}>
                     <div style={{ width:20, height:20, borderRadius:"50%", background: done ? C.green : cur ? cfg.dot : C.border, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                       {done && <span style={{ color:"#fff", fontSize:11 }}>✓</span>}
                       {cur  && <span style={{ width:8, height:8, borderRadius:"50%", background:"#fff", display:"block" }} />}
@@ -1457,7 +1455,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
                 )}
                 {canRevert && currentIdx > 1 && (
                   <button onClick={revertStatus}
-                    style={{ padding:"10px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, background:"#fff", color:C.textSub, fontWeight:600, cursor:"pointer", fontSize:12, fontFamily:F }}>
+                    style={{ padding:"10px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, background:C.card, color:C.textSub, fontWeight:600, cursor:"pointer", fontSize:12, fontFamily:F }}>
                     ↩
                   </button>
                 )}
@@ -1467,12 +1465,12 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
 
           {/* Technician assignment (admin only) */}
           {isAdmin && (
-            <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
+            <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
               <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:14 }}>Assign request to team member</div>
               <label style={{ fontSize:11, color:C.textSub, fontWeight:600, display:"block", marginBottom:4 }}>Select Team Member:</label>
               <select value={technicianSel} onChange={e => setTechSel(e.target.value)}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:13, background:"#fff", color:C.slate, fontFamily:F, outline:"none", marginBottom:12 }}>
-                {(TECHNICIANS[ticket.dept] || ["Unassigned"]).map(t => <option key={t}>{t}</option>)}
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:13, background:C.card, color:C.slate, fontFamily:F, outline:"none", marginBottom:12 }}>
+                {(TECHNICIANS[ticket.dept] || ["Unassigned"]).map(t => <option key={t} style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>{t}</option>)}
               </select>
               
               <label style={{ fontSize:11, color:C.textSub, fontWeight:600, display:"block", marginBottom:4 }}>Reversion/Assignment Note (Optional):</label>
@@ -1485,7 +1483,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
               />
 
               <button onClick={assignTech}
-                style={{ width:"100%", padding:"10px", borderRadius:10, border:"none", background:C.slate, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:13, fontFamily:F }}>
+                style={{ width:"100%", padding:"10px", borderRadius:10, border:"none", background:C.slate, color: currentTheme === "dark" ? "#0F172A" : "#fff", fontWeight:700, cursor:"pointer", fontSize:13, fontFamily:F }}>
                 Assign & Save
               </button>
             </div>
@@ -1493,7 +1491,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
 
           {/* Cross-Department Redirection / Portal Assignment (admin only) */}
           {isAdmin && (
-            <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
+            <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
               <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:14 }}>Cross-Department Redirect</div>
               
               <p style={{ fontSize:12, color:C.textSub, margin:"0 0 12px", lineHeight:1.45 }}>
@@ -1517,9 +1515,9 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
 
               <label style={{ fontSize:11, color:C.textSub, fontWeight:600, display:"block", marginBottom:4 }}>Select Destination Portal:</label>
               <select value={redirectDept} onChange={e => setRedirectDept(e.target.value)}
-                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:13, background:"#fff", color:C.slate, fontFamily:F, outline:"none", marginBottom:12 }}>
+                style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:13, background:C.card, color:C.slate, fontFamily:F, outline:"none", marginBottom:12 }}>
                 {["IT Admin", "Facilities Management", "Admin Office"].map(d => (
-                  <option key={d} disabled={d === ticket.dept}>{d} {d === ticket.dept ? "(Current)" : ""}</option>
+                  <option key={d} disabled={d === ticket.dept} style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>{d} {d === ticket.dept ? "(Current)" : ""}</option>
                 ))}
               </select>
 
@@ -1536,7 +1534,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
                     key={idx}
                     type="button"
                     onClick={() => setRedirectReason(preset.val + (redirectDept === ticket.dept ? "another team" : redirectDept) + ".")}
-                    style={{ padding: "3px 8px", borderRadius: 6, border: `1.5px solid ${C.border}`, background: "#fff", fontSize: 10, color: C.textSub, fontWeight: 600, cursor: "pointer" }}
+                    style={{ padding: "3px 8px", borderRadius: 6, border: `1.5px solid ${C.border}`, background:C.card, fontSize: 10, color: C.textSub, fontWeight: 600, cursor: "pointer" }}
                   >
                     {preset.label}
                   </button>
@@ -1581,13 +1579,13 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
           )}
 
           {/* Priority */}
-          <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
+          <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
             <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:12 }}>Urgency</div>
             <PriBadge p={ticket.priority} />
           </div>
 
           {/* Location */}
-          <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
+          <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 22px" }}>
             <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:12 }}>Location</div>
             <div style={{ fontSize:13, color:C.slate, fontWeight:600, lineHeight:1.6 }}>{ticket.location}{ticket.desk ? `, ${ticket.desk}` : ""}</div>
             <div style={{ fontSize:12, color:C.textSub, marginTop:4 }}>{ticket.dept}</div>
@@ -1620,7 +1618,7 @@ function RequestHistory({ tickets, office, onOpenTicket }: { tickets: Ticket[]; 
           const active = activeStatus === s;
           return (
             <button key={s} onClick={() => setActiveStatus(s)}
-              style={{ padding:"8px 16px", borderRadius:24, border:`1.5px solid ${active ? C.slate : C.border}`, background:active ? C.slate : "#fff", color:active ? "#fff" : C.textSub, fontSize:13, fontWeight:600, cursor:"pointer", display:"flex", alignItems:"center", gap:7, fontFamily:F }}>
+              style={{ padding:"8px 16px", borderRadius:24, border:`1.5px solid ${active ? C.slate : C.border}`, background:active ? C.slate : C.card, color:active ? (currentTheme === "dark" ? "#0F172A" : "#fff") : C.textSub, fontSize:13, fontWeight:600, cursor:"pointer", display:"flex", alignItems:"center", gap:7, fontFamily:F }}>
               {s}<span style={{ fontWeight:700, fontSize:12, color:active ? "rgba(255,255,255,0.55)" : C.textMuted }}>{counts[s]}</span>
             </button>
           );
@@ -1628,7 +1626,7 @@ function RequestHistory({ tickets, office, onOpenTicket }: { tickets: Ticket[]; 
       </div>
       <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
         {filtered.length === 0 && (
-          <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"56px 32px", textAlign:"center" }}>
+          <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"56px 32px", textAlign:"center" }}>
             <div style={{ fontSize:32, marginBottom:12 }}>📭</div>
             <div style={{ fontWeight:700, color:C.slate, fontSize:16, marginBottom:6 }}>No requests here</div>
             <div style={{ color:C.textSub, fontSize:14 }}>Requests in this status will appear here.</div>
@@ -1638,7 +1636,7 @@ function RequestHistory({ tickets, office, onOpenTicket }: { tickets: Ticket[]; 
           const lastPublic = [...t.thread].reverse().find(e => !e.internal);
           return (
             <div key={t.id} onClick={() => onOpenTicket(t)}
-              style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, padding:"22px 26px", transition:"border-color 0.15s, box-shadow 0.15s", cursor:"pointer" }}
+              style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"22px 26px", transition:"border-color 0.15s, box-shadow 0.15s", cursor:"pointer" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor=C.coral; e.currentTarget.style.boxShadow="0 4px 16px rgba(255,68,79,0.08)"; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.boxShadow="none"; }}>
               <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:8 }}>
@@ -1699,7 +1697,7 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
   const [dragOver, setDragOver] = useState(false);
 
   const isAssetCategory = ASSET_CATEGORIES.includes(category);
-  const inp = { width:"100%", padding:"11px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:14, outline:"none", background:"#fff", boxSizing:"border-box", color:C.slate, fontFamily:F };
+  const inp = { width:"100%", padding:"11px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:14, outline:"none", background:C.card, boxSizing:"border-box", color:C.slate, fontFamily:F };
   const lbl = { fontSize:13, fontWeight:600, color:C.slate, display:"block", marginBottom:6 };
 
   const SectionDivider = ({ title, subtitle }: { title: string; subtitle?: string }) => (
@@ -1768,15 +1766,15 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
       <div style={{ fontSize:11, color:C.coral, letterSpacing:1.2, textTransform:"uppercase", fontWeight:700, marginBottom:6 }}>NEW REQUEST</div>
       <h1 style={{ fontSize:34, fontWeight:800, color:C.slate, margin:"0 0 8px", letterSpacing:-0.8 }}>Submit a request</h1>
       <p style={{ fontSize:15, color:C.textSub, margin:"0 0 32px" }}>Describe your issue and the right team will respond within SLA targets.</p>
-      <div style={{ background:"#fff", borderRadius:20, border:`1.5px solid ${C.border}`, padding:"36px" }}>
+      <div style={{ background:C.card, borderRadius:20, border:`1.5px solid ${C.border}`, padding:"36px" }}>
         <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:18 }}>Request details</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
           <div>
             <label style={lbl}>Department <span style={{ color:C.coral }}>*</span></label>
             <select value={dept} onChange={e => setDept(e.target.value)} style={inp}>
-              <option>IT Admin</option>
-              <option>Facilities Management</option>
-              <option>Admin Office</option>
+              <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>IT Admin</option>
+              <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>Facilities Management</option>
+              <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>Admin Office</option>
             </select>
             {recommendedDept && recommendedDept !== dept && (
               <div style={{ marginTop: 8, padding: "10px 12px", borderRadius: 8, background: "#FFFBEB", border: "1.5px solid #FDE68A", fontSize: 12, lineHeight: 1.45 }}>
@@ -1797,9 +1795,9 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
           <div>
             <label style={lbl}>Category <span style={{ color:C.coral }}>*</span></label>
             <select value={category} onChange={e => { setCategory(e.target.value); setAssetTagVal(""); }} style={inp}>
-              <option value="">Select a category</option>
-              <optgroup label="── Asset-related">{ASSET_CATEGORIES.map(c => <option key={c}>{c}</option>)}</optgroup>
-              <optgroup label="── General">{ALL_CATEGORIES.filter(c => !ASSET_CATEGORIES.includes(c)).map(c => <option key={c}>{c}</option>)}</optgroup>
+              <option value="" style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>Select a category</option>
+              <optgroup label="── Asset-related" style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>{ASSET_CATEGORIES.map(c => <option key={c} style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>{c}</option>)}</optgroup>
+              <optgroup label="── General" style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>{ALL_CATEGORIES.filter(c => !ASSET_CATEGORIES.includes(c)).map(c => <option key={c} style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>{c}</option>)}</optgroup>
             </select>
           </div>
         </div>
@@ -1815,7 +1813,7 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
           <div>
             <label style={lbl}>Floor / Area</label>
             <select value={floor} onChange={e => setFloor(e.target.value)} style={inp}>
-              {["Ground Floor","Level 1","Level 2","Level 3","Level 4","Level 5"].map(f => <option key={f}>{f}</option>)}
+              {["Ground Floor","Level 1","Level 2","Level 3","Level 4","Level 5"].map(f => <option key={f} style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>{f}</option>)}
             </select>
           </div>
           <div>
@@ -1827,7 +1825,7 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
           <label style={lbl}>Urgency <span style={{ color:C.coral }}>*</span></label>
           <div className="flex flex-wrap sm:flex-nowrap gap-2.5">
             {["Low","Medium","High","Critical"].map(p => { const cfg=priorityCfg(p); const active=priority===p; return (
-              <div key={p} onClick={() => setPriority(p)} style={{ flex:1, minWidth:"80px", padding:"12px", borderRadius:12, border:`2px solid ${active?(p==="Critical"?C.coral:cfg.dot):C.border}`, background:active?cfg.bg:"#fff", cursor:"pointer", textAlign:"center", fontWeight:600, fontSize:13, color:active?cfg.color:C.textSub, transition:"all 0.15s" }}>{p}</div>
+              <div key={p} onClick={() => setPriority(p)} style={{ flex:1, minWidth:"80px", padding:"12px", borderRadius:12, border:`2px solid ${active?(p==="Critical"?C.coral:cfg.dot):C.border}`, background:active?cfg.bg:C.card, cursor:"pointer", textAlign:"center", fontWeight:600, fontSize:13, color:active?cfg.color:C.textSub, transition:"all 0.15s" }}>{p}</div>
             ); })}
           </div>
         </div>
@@ -1853,16 +1851,9 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
           <div>
             <label style={lbl}>Team / Department <span style={{ color:C.coral }}>*</span></label>
             <select value={team} onChange={e => setTeam(e.target.value)} style={inp}>
-              <option value="Finance">Finance</option>
-              <option value="Compliance">Compliance</option>
-              <option value="Engineering / Technology (core tech, platform, infrastructure)">Engineering / Technology (core tech, platform, infrastructure)</option>
-              <option value="Data Analytics">Data Analytics</option>
-              <option value="Security & DR">Security & DR</option>
-              <option value="HR (Human Resources)">HR (Human Resources)</option>
-              <option value="Growth AI & Product">Growth AI & Product</option>
-              <option value="Global Partnerships">Global Partnerships</option>
-              <option value="CX (Customer Experience / Support)">CX (Customer Experience / Support)</option>
-              <option value="Operations">Operations</option>
+              {["Finance", "Compliance", "Engineering / Technology (core tech, platform, infrastructure)", "Data Analytics", "Security & DR", "HR (Human Resources)", "Growth AI & Product", "Global Partnerships", "CX (Customer Experience / Support)", "Operations"].map(t => (
+                <option key={t} value={t} style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>{t}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -1886,11 +1877,9 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
               <div><label style={lbl}>Asset make / model</label><input value={assetModel} onChange={e => setAssetModel(e.target.value)} placeholder="e.g. Dell UltraSharp U2722D" style={inp} /></div>
               <div><label style={lbl}>Asset condition</label>
                 <select value={assetCondition} onChange={e => setAssetCondition(e.target.value)} style={inp}>
-                  <option>Not working at all</option>
-                  <option>Intermittent fault</option>
-                  <option>Degraded performance</option>
-                  <option>Physical damage</option>
-                  <option>Lost / stolen</option>
+                  {["Not working at all", "Intermittent fault", "Degraded performance", "Physical damage", "Lost / stolen"].map(c => (
+                    <option key={c} style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>{c}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -1906,7 +1895,7 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
           </div>
         </div>
         <div style={{ display:"flex", justifyContent:"flex-end", gap:12 }}>
-          <button style={{ padding:"12px 24px", borderRadius:12, border:`1.5px solid ${C.border}`, background:"#fff", color:C.textSub, fontWeight:600, cursor:"pointer", fontSize:14, fontFamily:F }}>Cancel</button>
+          <button style={{ padding:"12px 24px", borderRadius:12, border:`1.5px solid ${C.border}`, background:C.card, color:C.textSub, fontWeight:600, cursor:"pointer", fontSize:14, fontFamily:F }}>Cancel</button>
           <button onClick={handleSubmit} style={{ padding:"12px 28px", borderRadius:12, border:"none", background:C.coral, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:14, fontFamily:F, boxShadow:"0 4px 16px rgba(255,68,79,0.30)" }}>Submit request →</button>
         </div>
       </div>
@@ -1921,7 +1910,7 @@ function SubmitSuccess({ onAnother, onHistory }: { onAnother: () => void; onHist
       <h2 style={{ fontSize:30, fontWeight:800, color:C.slate, margin:0, letterSpacing:-0.6 }}>Request submitted</h2>
       <p style={{ fontSize:15, color:C.textSub, maxWidth:400, lineHeight:1.65, margin:0 }}>Your ticket has been created and routed to the right team.<br />You'll receive updates here and by email.</p>
       <div style={{ display:"flex", gap:12, marginTop:8 }}>
-        <button onClick={onAnother} style={{ padding:"11px 22px", borderRadius:12, border:`1.5px solid ${C.slate}`, background:"#fff", color:C.slate, fontWeight:700, cursor:"pointer", fontSize:14, fontFamily:F }}>Submit another</button>
+        <button onClick={onAnother} style={{ padding:"11px 22px", borderRadius:12, border:`1.5px solid ${C.slate}`, background:C.card, color:C.slate, fontWeight:700, cursor:"pointer", fontSize:14, fontFamily:F }}>Submit another</button>
         <button onClick={onHistory} style={{ padding:"11px 22px", borderRadius:12, border:"none", background:C.coral, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:14, fontFamily:F }}>View my requests</button>
       </div>
     </div>
@@ -1966,7 +1955,7 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
     <div style={{ display:"flex", gap:8 }}>
       {items.map(s => (
         <button key={s} onClick={() => setActive(s)}
-          style={{ padding:"7px 16px", borderRadius:20, border:`1.5px solid ${active===s?C.slate:C.border}`, background:active===s?C.slate:"#fff", color:active===s?"#fff":C.textSub, fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:F }}>
+          style={{ padding:"7px 16px", borderRadius:20, border:`1.5px solid ${active===s?C.slate:C.border}`, background:active===s?C.slate:C.card, color:active===s?(currentTheme === "dark" ? "#0F172A" : "#fff"):C.textSub, fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:F }}>
           {s}
         </button>
       ))}
@@ -1992,12 +1981,14 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
         <PillRow active={activeP} setActive={setActiveP} items={priorities} />
         <div className="w-full sm:w-auto flex items-center gap-2 sm:ml-auto mt-2 sm:mt-0">
           <span style={{ fontSize:13, color:C.textSub }}>Sort:</span>
-          <select value={sort} onChange={e => setSort(e.target.value)} style={{ padding:"7px 12px", borderRadius:8, border:`1px solid ${C.border}`, fontSize:13, background:"#fff", color:C.slate, fontFamily:F, outline:"none" }}>
-            <option>Urgency</option><option>Status</option><option>Date</option>
+          <select value={sort} onChange={e => setSort(e.target.value)} style={{ padding:"7px 12px", borderRadius:8, border:`1px solid ${C.border}`, fontSize:13, background:C.card, color:C.slate, fontFamily:F, outline:"none" }}>
+            <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>Urgency</option>
+            <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>Status</option>
+            <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>Date</option>
           </select>
         </div>
       </div>
-      <div style={{ background:"#fff", borderRadius:16, border:`1.5px solid ${C.border}`, overflow:"hidden" }}>
+      <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, overflow:"hidden" }}>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13, minWidth: "800px" }}>
             <thead>
@@ -2012,9 +2003,9 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
                 <tr><td colSpan={8} style={{ padding:"48px", textAlign:"center", color:C.textMuted }}>No requests match this filter.</td></tr>
               )}
               {shown.map((t) => (
-                <tr key={t.id} onClick={() => onOpenTicket(t)} style={{ borderTop:`1px solid ${C.borderLight}`, background:"#fff", cursor:"pointer", transition:"background 0.12s" }}
-                  onMouseEnter={e => e.currentTarget.style.background="#FAFBFC"}
-                  onMouseLeave={e => e.currentTarget.style.background="#fff"}>
+                <tr key={t.id} onClick={() => onOpenTicket(t)} style={{ borderTop:`1px solid ${C.borderLight}`, background:C.card, cursor:"pointer", transition:"background 0.12s" }}
+                  onMouseEnter={e => e.currentTarget.style.background=C.bg}
+                  onMouseLeave={e => e.currentTarget.style.background=C.card}>
                   <td style={{ padding:"16px 20px", color:C.textMuted, fontSize:12, fontWeight:500, whiteSpace:"nowrap" }}>{t.id}</td>
                   <td style={{ padding:"16px 20px", maxWidth:240 }}>
                     <div style={{ fontWeight:700, color:C.slate, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{t.title}</div>
