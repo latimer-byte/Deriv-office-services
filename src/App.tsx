@@ -77,24 +77,24 @@ const C_LIGHT = {
 const C_DARK = {
   coral:       "#FF444F",
   coralDark:   "#FF5A65",
-  coralLight:  "#2D1C1E",
-  coralMid:    "#442426",
-  slate:       "#F4F5F7",
-  slateMid:    "#E4E7ED",
-  slateLight:  "#9AA0B4",
-  bg:          "#0E1118",
-  card:        "#161B26",
-  border:      "#222938",
-  borderLight: "#1C212E",
-  text:        "#F4F5F7",
-  textSub:     "#A0AEC0",
+  coralLight:  "#201A1B",
+  coralMid:    "#352022",
+  slate:       "#F8FAFC",
+  slateMid:    "#E2E8F0",
+  slateLight:  "#94A3B8",
+  bg:          "#0F172A",
+  card:        "#1E293B",
+  border:      "#334155",
+  borderLight: "#1E293B",
+  text:        "#F8FAFC",
+  textSub:     "#94A3B8",
   textMuted:   "#64748B",
   green:       "#10B981",
-  greenLight:  "#112E24",
+  greenLight:  "#0F2922",
   amber:       "#F59E0B",
-  amberLight:  "#2D2312",
+  amberLight:  "#282012",
   red:         "#EF4444",
-  redLight:    "#2D1A1C",
+  redLight:    "#281A1C",
   blue:        "#3B82F6",
   blueLight:   "#13253E",
   purple:      "#8B5CF6",
@@ -591,7 +591,7 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
   }, [localToast]);
 
   return (
-    <div style={{ minHeight:"100vh", background: theme === "dark" ? "#0A0D1A" : "#F4F5F7", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"40px 20px", fontFamily:F, position: "relative", overflowX: "hidden" }}>
+    <div style={{ minHeight:"100vh", background: theme === "dark" ? "#0F172A" : "#F4F5F7", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"40px 20px", fontFamily:F, position: "relative", overflowX: "hidden" }}>
       {/* Floating Theme Toggle */}
       <div style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}>
         <button
@@ -599,8 +599,8 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
           style={{
             padding: "8px 14px",
             borderRadius: 12,
-            border: `1.5px solid ${theme === "dark" ? "#222942" : "#E4E7ED"}`,
-            background: theme === "dark" ? "#131726" : "#FFFFFF",
+            border: `1.5px solid ${theme === "dark" ? "#334155" : "#E4E7ED"}`,
+            background: theme === "dark" ? "#1E293B" : "#FFFFFF",
             color: theme === "dark" ? "#FF444F" : "#181C25",
             fontSize: 13,
             fontWeight: 700,
@@ -632,10 +632,10 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
               <circle cx="12" cy="11" r="3.5" fill="white" fillOpacity="0.5"/>
             </svg>
           </div>
-          <span style={{ fontFamily:F, fontWeight:800, fontSize:20, color: theme === "dark" ? "#fff" : "#181C25", letterSpacing:-0.5 }}>Deriv</span>
+          <span style={{ fontFamily:F, fontWeight:800, fontSize:20, color: theme === "dark" ? "#F8FAFC" : "#181C25", letterSpacing:-0.5 }}>Deriv</span>
         </div>
-        <div style={{ width:1, height:22, background: theme === "dark" ? "#1F2538" : "#E4E7ED" }} />
-        <span style={{ fontSize:13, color: theme === "dark" ? "#8E9AA8" : "#515A70", fontWeight:500 }}>Office Services</span>
+        <div style={{ width:1, height:22, background: theme === "dark" ? "#334155" : "#E4E7ED" }} />
+        <span style={{ fontSize:13, color: theme === "dark" ? "#94A3B8" : "#515A70", fontWeight:500 }}>Office Services</span>
       </div>
 
       {/* ─── Iconic Global Locations Section (Moved to the Top) ─────────────────── */}
@@ -643,11 +643,11 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
         marginBottom: 40,
         width: "100%",
         maxWidth: "1000px",
-        background: theme === "dark" ? "#0F111A" : "#FFFFFF",
+        background: theme === "dark" ? "#1E293B" : "#FFFFFF",
         borderRadius: 24,
-        border: theme === "dark" ? "1.5px solid #1E2230" : "1.5px solid #E4E7ED",
+        border: theme === "dark" ? "1.5px solid #334155" : "1.5px solid #E4E7ED",
         padding: "24px 28px",
-        boxShadow: theme === "dark" ? "0 12px 36px rgba(12,14,20,0.4)" : "0 4px 20px rgba(0,0,0,0.03)",
+        boxShadow: theme === "dark" ? "0 12px 36px rgba(15,23,42,0.5)" : "0 4px 20px rgba(0,0,0,0.03)",
         animation: "slideup 0.5s ease-out",
         zIndex: 1,
         position: "relative"
@@ -655,9 +655,9 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span className="animate-pulse" style={{ width: 8, height: 8, borderRadius: "50%", background: "#FF444F", boxShadow: "0 0 12px #FF444F" }} />
-            <span style={{ fontSize: 13, fontWeight: 800, color: theme === "dark" ? "#8E9AA8" : "#515A70", letterSpacing: "1px", fontFamily: F }}>OUR GLOBAL LOCATIONS</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: theme === "dark" ? "#94A3B8" : "#515A70", letterSpacing: "1px", fontFamily: F }}>OUR GLOBAL LOCATIONS</span>
           </div>
-          <span style={{ fontSize: 11, color: theme === "dark" ? "#566474" : "#8E9AA8", fontWeight: 600 }}>Click cards or use arrows to navigate (No rows layout)</span>
+          <span style={{ fontSize: 11, color: theme === "dark" ? "#64748B" : "#8E9AA8", fontWeight: 600 }}>Click cards or use arrows to navigate (No rows layout)</span>
         </div>
 
         <div style={{
@@ -701,9 +701,9 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
               width: 38,
               height: 38,
               borderRadius: "50%",
-              background: theme === "dark" ? "#131726" : "#FFFFFF",
-              border: `1.5px solid ${theme === "dark" ? "#222942" : "#E4E7ED"}`,
-              color: theme === "dark" ? "#fff" : "#181C25",
+              background: theme === "dark" ? "#1E293B" : "#FFFFFF",
+              border: `1.5px solid ${theme === "dark" ? "#334155" : "#E4E7ED"}`,
+              color: theme === "dark" ? "#F8FAFC" : "#181C25",
               fontSize: 16,
               cursor: "pointer",
               display: "flex",
@@ -734,9 +734,9 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
               width: 38,
               height: 38,
               borderRadius: "50%",
-              background: theme === "dark" ? "#131726" : "#FFFFFF",
-              border: `1.5px solid ${theme === "dark" ? "#222942" : "#E4E7ED"}`,
-              color: theme === "dark" ? "#fff" : "#181C25",
+              background: theme === "dark" ? "#1E293B" : "#FFFFFF",
+              border: `1.5px solid ${theme === "dark" ? "#334155" : "#E4E7ED"}`,
+              color: theme === "dark" ? "#F8FAFC" : "#181C25",
               fontSize: 16,
               cursor: "pointer",
               display: "flex",
@@ -794,9 +794,9 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
                   bottom: isMobile ? "20px" : "30px",
                   width: cardWidth,
                   height: cardHeight,
-                  background: theme === "dark" ? "#141724" : "#F8FAFC",
+                  background: theme === "dark" ? "#1E293B" : "#F8FAFC",
                   borderRadius: 16,
-                  border: `1.5px solid ${isSelected ? loc.color : (theme === "dark" ? "#222738" : "#E2E8F0")}`,
+                  border: `1.5px solid ${isSelected ? loc.color : (theme === "dark" ? "#334155" : "#E2E8F0")}`,
                   padding: isMobile ? "8px" : "12px",
                   cursor: "pointer",
                   transition: "all 0.5s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s, box-shadow 0.3s",
@@ -818,7 +818,7 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
                 }}
                 onMouseLeave={e => {
                   if (!isSelected) {
-                    e.currentTarget.style.borderColor = theme === "dark" ? "#222738" : "#E2E8F0";
+                    e.currentTarget.style.borderColor = theme === "dark" ? "#334155" : "#E2E8F0";
                     e.currentTarget.style.boxShadow = theme === "dark" ? "none" : "0 2px 8px rgba(0,0,0,0.03)";
                   }
                 }}
@@ -830,7 +830,7 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
                   paddingBottom: "80%",
                   borderRadius: 10,
                   overflow: "hidden",
-                  background: theme === "dark" ? "#08090E" : "#F1F5F9",
+                  background: theme === "dark" ? "#0F172A" : "#F1F5F9",
                   marginBottom: 8
                 }}>
                   <img
@@ -861,10 +861,10 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
                     {/* Country Header */}
                     <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 2 }}>
                       <span style={{ fontSize: isMobile ? 9 : 10 }}>{loc.flag}</span>
-                      <span style={{ fontSize: isMobile ? 8 : 9, fontWeight: 800, color: theme === "dark" ? "#fff" : "#181C25", letterSpacing: "0.5px" }}>{loc.country}</span>
+                      <span style={{ fontSize: isMobile ? 8 : 9, fontWeight: 800, color: theme === "dark" ? "#F8FAFC" : "#181C25", letterSpacing: "0.5px" }}>{loc.country}</span>
                     </div>
                     {/* City Subtitle */}
-                    <div style={{ fontSize: isMobile ? 10 : 11, color: theme === "dark" ? "#8E9AA8" : "#515A70", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{loc.city}</div>
+                    <div style={{ fontSize: isMobile ? 10 : 11, color: theme === "dark" ? "#94A3B8" : "#515A70", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{loc.city}</div>
                   </div>
 
                   {/* Footprint Indicator */}
@@ -874,7 +874,7 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
                     alignItems: "center",
                     gap: 4,
                     fontSize: isMobile ? 8 : 9,
-                    color: isSelected ? loc.color : (theme === "dark" ? "#566474" : "#7C8BA1"),
+                    color: isSelected ? loc.color : (theme === "dark" ? "#64748B" : "#7C8BA1"),
                     fontFamily: "monospace",
                     fontWeight: 700
                   }}>
@@ -889,21 +889,21 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
       </div>
       
       <div style={{ textAlign:"center", marginBottom:40, maxWidth:540, zIndex: 1 }}>
-        <h1 style={{ fontFamily:F, fontSize:40, fontWeight:800, color: theme === "dark" ? "#fff" : "#181C25", margin:"0 0 14px", letterSpacing:-1, lineHeight: 1.1 }}>Select your portal</h1>
-        <p style={{ fontSize:15, color: theme === "dark" ? "#8E9AA8" : "#515A70", lineHeight:1.6, margin:0 }}>Choose your role to access the appropriate workspace.<br />Staff submit and track requests; teams manage and resolve them.</p>
+        <h1 style={{ fontFamily:F, fontSize:40, fontWeight:800, color: theme === "dark" ? "#F8FAFC" : "#181C25", margin:"0 0 14px", letterSpacing:-1, lineHeight: 1.1 }}>Select your portal</h1>
+        <p style={{ fontSize:15, color: theme === "dark" ? "#94A3B8" : "#515A70", lineHeight:1.6, margin:0 }}>Choose your role to access the appropriate workspace.<br />Staff submit and track requests; teams manage and resolve them.</p>
       </div>
 
-      <div style={{ marginBottom:36, display:"flex", alignItems:"center", gap:10, background: theme === "dark" ? "#131726" : "#FFFFFF", padding:"10px 18px", borderRadius:12, border: theme === "dark" ? "1.5px solid #222942" : "1.5px solid #E4E7ED", zIndex: 1, boxShadow: theme === "dark" ? "none" : "0 4px 12px rgba(0,0,0,0.03)" }}>
+      <div style={{ marginBottom:36, display:"flex", alignItems:"center", gap:10, background: theme === "dark" ? "#1E293B" : "#FFFFFF", padding:"10px 18px", borderRadius:12, border: theme === "dark" ? "1.5px solid #334155" : "1.5px solid #E4E7ED", zIndex: 1, boxShadow: theme === "dark" ? "none" : "0 4px 12px rgba(0,0,0,0.03)" }}>
         <span style={{ fontSize:16 }}>📍</span>
-        <span style={{ fontSize:13, color: theme === "dark" ? "#8E9AA8" : "#515A70", fontWeight:500 }}>Your office:</span>
+        <span style={{ fontSize:13, color: theme === "dark" ? "#94A3B8" : "#515A70", fontWeight:500 }}>Your office:</span>
         <select value={office} onChange={e => {
           setOffice(e.target.value);
           const cityMatched = NEON_LOCATIONS.find(loc => loc.officeValue === e.target.value || (e.target.value.includes("Malaysia") && loc.officeValue.includes("Malaysia")));
           if (cityMatched) {
             setLocalToast(`📍 Connected to ${cityMatched.city} Office Services subnet`);
           }
-        }} style={{ border:"none", fontSize:13, background:"transparent", color: theme === "dark" ? "#fff" : "#181C25", fontFamily:F, fontWeight:700, outline:"none", cursor:"pointer", paddingRight:8 }}>
-          {OFFICES.map(o => <option key={o} style={{ background: theme === "dark" ? "#131726" : "#FFFFFF", color: theme === "dark" ? "#fff" : "#181C25" }}>{o}</option>)}
+        }} style={{ border:"none", fontSize:13, background:"transparent", color: theme === "dark" ? "#F8FAFC" : "#181C25", fontFamily:F, fontWeight:700, outline:"none", cursor:"pointer", paddingRight:8 }}>
+          {OFFICES.map(o => <option key={o} style={{ background: theme === "dark" ? "#1E293B" : "#FFFFFF", color: theme === "dark" ? "#F8FAFC" : "#181C25" }}>{o}</option>)}
         </select>
       </div>
 
@@ -914,10 +914,10 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
           return (
             <div key={p.id} onClick={() => onSelect(p.id)}
               style={{
-                background: theme === "dark" ? "#131726" : "#FFFFFF",
+                background: theme === "dark" ? "#1E293B" : "#FFFFFF",
                 borderRadius: 20,
                 padding: "28px 28px 24px",
-                border: theme === "dark" ? "1.5px solid #222942" : "1.5px solid #E4E7ED",
+                border: theme === "dark" ? "1.5px solid #334155" : "1.5px solid #E4E7ED",
                 cursor: "pointer",
                 transition: "all 0.22s cubic-bezier(0.25, 0.8, 0.25, 1)",
                 position: "relative",
@@ -929,7 +929,7 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
                 e.currentTarget.style.boxShadow = `0 8px 30px ${glowColor}25`; 
               }}
               onMouseLeave={e => { 
-                e.currentTarget.style.borderColor = theme === "dark" ? "#222942" : "#E4E7ED"; 
+                e.currentTarget.style.borderColor = theme === "dark" ? "#334155" : "#E4E7ED"; 
                 e.currentTarget.style.transform = "none"; 
                 e.currentTarget.style.boxShadow = theme === "dark" ? "none" : "0 4px 16px rgba(0,0,0,0.02)"; 
               }}>
@@ -937,18 +937,18 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
               <div style={{ width:50, height:50, borderRadius:14, background: `${glowColor}18`, border: `1.5px solid ${glowColor}30`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, marginBottom:16 }}>
                 <span style={{ filter: `drop-shadow(0 0 3px ${glowColor})` }}>{p.icon}</span>
               </div>
-              <div style={{ fontWeight:700, fontSize:16, color: theme === "dark" ? "#fff" : "#181C25", marginBottom:8 }}>{p.label}</div>
-              <div style={{ fontSize:14, color: theme === "dark" ? "#8E9AA8" : "#515A70", lineHeight:1.5 }}>{p.desc}</div>
+              <div style={{ fontWeight:700, fontSize:16, color: theme === "dark" ? "#F8FAFC" : "#181C25", marginBottom:8 }}>{p.label}</div>
+              <div style={{ fontSize:14, color: theme === "dark" ? "#94A3B8" : "#515A70", lineHeight:1.5 }}>{p.desc}</div>
             </div>
           );
         })}
       </div>
 
       <div className="mt-12 flex flex-wrap justify-center gap-8 md:gap-14" style={{ marginBottom: 40, zIndex: 1 }}>
-        {[["Active Requests",activeCount,C.coral],["Offices",OFFICES.length, theme === "dark" ? "#fff" : "#181C25"],["Resolution Rate",`${resolvedRate}%`,C.green]].map(([l,v,col]) => (
+        {[["Active Requests",activeCount,C.coral],["Offices",OFFICES.length, theme === "dark" ? "#F8FAFC" : "#181C25"],["Resolution Rate",`${resolvedRate}%`,C.green]].map(([l,v,col]) => (
           <div key={l as string} style={{ textAlign:"center" }}>
             <div style={{ fontSize:22, fontWeight:800, color:col as string, filter: l === "Active Requests" ? `drop-shadow(0 0 4px ${C.coral}35)` : l === "Resolution Rate" ? `drop-shadow(0 0 4px ${C.green}35)` : "none" }}>{v}</div>
-            <div style={{ fontSize:11, color: theme === "dark" ? "#515A70" : "#7C8BA1", letterSpacing:0.8, textTransform:"uppercase", fontWeight:600, marginTop:4 }}>{l as string}</div>
+            <div style={{ fontSize:11, color: theme === "dark" ? "#64748B" : "#7C8BA1", letterSpacing:0.8, textTransform:"uppercase", fontWeight:600, marginTop:4 }}>{l as string}</div>
           </div>
         ))}
       </div>
@@ -2050,6 +2050,16 @@ export default function App() {
   const [openTicket, setOpenTicket] = useState<Ticket | null>(null);
   const [toast, setToast]         = useState<string | null>(null);
   const [ticketStore, setTicketStore] = useState<Record<string, Ticket[]>>(BASE_TICKETS);
+
+  // Preload all location images instantly
+  React.useEffect(() => {
+    NEON_LOCATIONS.forEach(loc => {
+      if (loc.image) {
+        const img = new Image();
+        img.src = loc.image;
+      }
+    });
+  }, []);
 
   // Sync global Proxy variable with React's state
   currentTheme = theme;
