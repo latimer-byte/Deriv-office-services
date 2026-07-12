@@ -313,7 +313,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title,
           <div style={{ fontSize: 11, color: C.coral, letterSpacing: 1.2, textTransform: "uppercase", fontWeight: 700, marginBottom: 6 }}>
             {title} · PERFORMANCE METRICS
           </div>
-          <h1 style={{ fontSize: 34, fontWeight: 800, color: C.slate, margin: "0 0 6px", letterSpacing: -0.8 }}>
+          <h1 className="text-2xl sm:text-[34px]" style={{ fontWeight: 800, color: C.slate, margin: "0 0 6px", letterSpacing: -0.8 }}>
             Analytics Dashboard
           </h1>
           <p style={{ fontSize: 15, color: C.textSub, margin: 0 }}>

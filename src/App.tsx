@@ -650,7 +650,8 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
         boxShadow: theme === "dark" ? "0 12px 36px rgba(15,23,42,0.5)" : "0 4px 20px rgba(0,0,0,0.03)",
         animation: "slideup 0.5s ease-out",
         zIndex: 1,
-        position: "relative"
+        position: "relative",
+        overflow: "hidden"
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -766,7 +767,8 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
             const angle = targetDiff * (isMobile ? 36 : 22); // Angle of separation
             const rad = (angle * Math.PI) / 180;
 
-            const radiusX = isMobile ? 120 : 340;
+            const containerWidth = typeof window !== 'undefined' ? window.innerWidth : 360;
+            const radiusX = isMobile ? Math.max(80, Math.min(120, (containerWidth - 60) / 2 - 20)) : 340;
             const radiusY = isMobile ? 35 : 65;
 
             const tx = Math.sin(rad) * radiusX;
@@ -784,7 +786,6 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
                 onClick={() => {
                   setActiveLocationIdx(i);
                   setOffice(loc.officeValue);
-                  setLocalToast(`⚡ Network switched to ${loc.city}, ${loc.country}!`);
                 }}
                 style={{
                   position: "absolute",
@@ -887,8 +888,8 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
       </div>
       
       <div style={{ textAlign:"center", marginBottom:40, maxWidth:540, zIndex: 1 }}>
-        <h1 style={{ fontFamily:F, fontSize:40, fontWeight:800, color: theme === "dark" ? "#F8FAFC" : "#181C25", margin:"0 0 14px", letterSpacing:-1, lineHeight: 1.1 }}>Select your portal</h1>
-        <p style={{ fontSize:15, color: theme === "dark" ? "#94A3B8" : "#515A70", lineHeight:1.6, margin:0 }}>Choose your role to access the appropriate workspace.<br />Staff submit and track requests; teams manage and resolve them.</p>
+        <h1 className="text-3xl sm:text-[40px]" style={{ fontFamily:F, fontWeight:800, color: theme === "dark" ? "#F8FAFC" : "#181C25", margin:"0 0 14px", letterSpacing:-1, lineHeight: 1.1 }}>Select your portal</h1>
+        <p className="text-sm sm:text-base px-2" style={{ color: theme === "dark" ? "#94A3B8" : "#515A70", lineHeight:1.6, margin:0 }}>Choose your role to access the appropriate workspace. Staff submit and track requests; teams manage and resolve them.</p>
       </div>
 
       <div style={{ marginBottom:36, display:"flex", alignItems:"center", gap:10, background: theme === "dark" ? "#1E293B" : "#FFFFFF", padding:"10px 18px", borderRadius:12, border: theme === "dark" ? "1.5px solid #334155" : "1.5px solid #E4E7ED", zIndex: 1, boxShadow: theme === "dark" ? "none" : "0 4px 12px rgba(0,0,0,0.03)" }}>
@@ -896,10 +897,6 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
         <span style={{ fontSize:13, color: theme === "dark" ? "#94A3B8" : "#515A70", fontWeight:500 }}>Your office:</span>
         <select value={office} onChange={e => {
           setOffice(e.target.value);
-          const cityMatched = NEON_LOCATIONS.find(loc => loc.officeValue === e.target.value || (e.target.value.includes("Malaysia") && loc.officeValue.includes("Malaysia")));
-          if (cityMatched) {
-            setLocalToast(`📍 Connected to ${cityMatched.city} Office Services subnet`);
-          }
         }} style={{ border:"none", fontSize:13, background:"transparent", color: theme === "dark" ? "#F8FAFC" : "#181C25", fontFamily:F, fontWeight:700, outline:"none", cursor:"pointer", paddingRight:8 }}>
           {OFFICES.map(o => <option key={o} style={{ background: theme === "dark" ? "#1E293B" : "#FFFFFF", color: theme === "dark" ? "#F8FAFC" : "#181C25" }}>{o}</option>)}
         </select>
@@ -993,73 +990,79 @@ function TopBar({ portal, office, onBack, view, setView, onPortalChange, theme, 
         { id:"dashboard", label:"Dashboard", icon:"📊" }
       ];
   return (
-    <div className="bg-[#181C25] border-b border-[#2A3042] px-4 md:px-8 py-3.5 md:py-2.5 md:min-h-[60px] md:h-auto flex flex-col md:flex-row md:flex-wrap lg:flex-nowrap md:items-center justify-between gap-3 md:gap-4 sticky top-0 z-20" style={{ fontFamily:F }}>
-      <div className="flex items-center gap-2 cursor-pointer" onClick={onBack}>
-        <div style={{ width:28, height:28, borderRadius:7, background:C.coral, display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-            <path d="M3 4h9a7 7 0 0 1 0 14H3V4z" fill="white" fillOpacity="0.9"/>
-            <circle cx="12" cy="11" r="3.5" fill="white" fillOpacity="0.45"/>
-          </svg>
+    <div className="bg-[#181C25] border-b border-[#2A3042] px-4 md:px-8 py-3 md:py-2.5 min-h-[56px] flex flex-row flex-wrap items-center justify-between gap-3 sticky top-0 z-20" style={{ fontFamily:F }}>
+      {/* Left side: Logo & Portal Selection */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={onBack}>
+          <div style={{ width:26, height:26, borderRadius:6, background:C.coral, display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
+              <path d="M3 4h9a7 7 0 0 1 0 14H3V4z" fill="white" fillOpacity="0.9"/>
+              <circle cx="12" cy="11" r="3.5" fill="white" fillOpacity="0.45"/>
+            </svg>
+          </div>
+          <span style={{ fontWeight:800, fontSize:15, color:"#fff", letterSpacing:-0.4 }}>Deriv</span>
+          <span className="hidden xs:inline text-[11px] text-[#9AA0B4] font-normal ml-0.5">Office Services</span>
         </div>
-        <span style={{ fontWeight:800, fontSize:16, color:"#fff", letterSpacing:-0.4 }}>Deriv</span>
-        <span className="hidden sm:inline text-xs text-[#9AA0B4] font-normal ml-0.5">Office Services</span>
-      </div>
-      <div className="hidden md:block w-px h-6 bg-[#2A3042]" />
-      
-      {/* Dynamic Workspace Quick Switcher */}
-      <div className="flex items-center gap-2">
-        <span className="text-[11px] text-[#9AA0B4] font-bold uppercase tracking-wider">Portal:</span>
-        <select 
-          value={portal} 
-          onChange={e => onPortalChange(e.target.value)}
-          style={{ background:"#2A3042", color:"#fff", border:`1.5px solid ${C.slateLight}`, borderRadius:8, padding:"4px 10px", fontSize:12, fontWeight:700, fontFamily:F, outline:"none", cursor:"pointer" }}
-        >
-          <option value="staff">👤 Staff Portal</option>
-          <option value="it">💻 IT Admin</option>
-          <option value="facilities">🔧 Facilities</option>
-          <option value="admin">📋 Admin Office</option>
-        </select>
+        <div className="hidden md:block w-px h-5 bg-[#2A3042]" />
+        
+        {/* Dynamic Workspace Quick Switcher */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] text-[#9AA0B4] font-bold uppercase tracking-wider hidden sm:inline">Portal:</span>
+          <select 
+            value={portal} 
+            onChange={e => onPortalChange(e.target.value)}
+            style={{ background:"#2A3042", color:"#fff", border:`1.5px solid ${C.slateLight}`, borderRadius:6, padding:"3px 8px", fontSize:11, fontWeight:700, fontFamily:F, outline:"none", cursor:"pointer" }}
+          >
+            <option value="staff">👤 Staff Portal</option>
+            <option value="it">💻 IT Admin</option>
+            <option value="facilities">🔧 Facilities</option>
+            <option value="admin">📋 Admin Office</option>
+          </select>
+        </div>
       </div>
 
-      <div className="hidden lg:block flex-1" />
-      <div className="hidden sm:flex px-3 py-1 rounded-full bg-[#2A3042] text-[#9AA0B4] text-xs font-semibold items-center gap-1.5 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
-        <span>📍</span>{office.split(",")[0]}
-      </div>
-      
-      <div className="flex flex-wrap items-center gap-2">
-        {navItems.map(n => (
-          <button key={n.id} onClick={() => setView(n.id)}
-            style={{ padding:"6px 12px", borderRadius:8, border:`1.5px solid ${view===n.id ? C.coral : C.slateMid}`, background:view===n.id ? C.coral : "transparent", color:view===n.id ? "#fff" : "#9AA0B4", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:F, whiteSpace:"nowrap" }}>
-            {n.icon} {n.label}
+      {/* Right side: Location & Action buttons */}
+      <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+        <div className="hidden sm:flex px-2.5 py-1 rounded-full bg-[#2A3042] text-[#9AA0B4] text-[11px] font-semibold items-center gap-1.5 whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
+          <span>📍</span>{office.split(",")[0]}
+        </div>
+        
+        {/* Navigation Items - Scrollable horizontally on narrow screens */}
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full -my-1 py-1">
+          {navItems.map(n => (
+            <button key={n.id} onClick={() => setView(n.id)}
+              style={{ padding:"5px 10px", borderRadius:6, border:`1.5px solid ${view===n.id ? C.coral : C.slateMid}`, background:view===n.id ? C.coral : "transparent", color:view===n.id ? "#fff" : "#9AA0B4", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:F, whiteSpace:"nowrap" }}>
+              {n.icon} {n.label}
+            </button>
+          ))}
+          {/* Dynamic Theme Switcher */}
+          <button
+            onClick={toggleTheme}
+            title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+            style={{
+              padding: "5px 8px",
+              borderRadius: 6,
+              border: "1.5px solid #2A3042",
+              background: "transparent",
+              color: "#9AA0B4",
+              fontSize: 11,
+              fontWeight: 600,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              fontFamily: F,
+              whiteSpace: "nowrap"
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = C.coral; e.currentTarget.style.color = "#fff"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#2A3042"; e.currentTarget.style.color = "#9AA0B4"; }}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
           </button>
-        ))}
-        {/* Dynamic Theme Switcher */}
-        <button
-          onClick={toggleTheme}
-          title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
-          style={{
-            padding: "6px 10px",
-            borderRadius: 8,
-            border: "1.5px solid #2A3042",
-            background: "transparent",
-            color: "#9AA0B4",
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            fontFamily: F,
-            whiteSpace: "nowrap"
-          }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = C.coral; e.currentTarget.style.color = "#fff"; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = "#2A3042"; e.currentTarget.style.color = "#9AA0B4"; }}
-        >
-          {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
-        </button>
-        <button onClick={onBack} style={{ padding:"6px 12px", borderRadius:8, border:`1px solid ${C.slateMid}`, background:"transparent", color:"#9AA0B4", fontSize:12, cursor:"pointer", fontFamily:F, whiteSpace:"nowrap" }}>
-          ← Portals
-        </button>
+          <button onClick={onBack} style={{ padding:"5px 10px", borderRadius:6, border:`1px solid ${C.slateMid}`, background:"transparent", color:"#9AA0B4", fontSize:11, fontWeight: 600, cursor:"pointer", fontFamily:F, whiteSpace:"nowrap" }}>
+            ← Portals
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -1206,7 +1209,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
 
       <div style={{ display:"flex", gap:24, alignItems:"flex-start", flexWrap:"wrap" }}>
         {/* ── LEFT: main thread ── */}
-        <div style={{ flex:1, minWidth:320, display:"flex", flexDirection:"column", gap:20 }}>
+        <div style={{ flex:1, minWidth:"min(320px, 100%)", display:"flex", flexDirection:"column", gap:20 }}>
           {/* Header card */}
           <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"24px 28px" }}>
             <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:12 }}>
@@ -1226,7 +1229,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
           {/* Staff & Asset info */}
           <div style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"20px 28px" }}>
             <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:14 }}>Staff & Asset Details</div>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-[14px]">
               {[
                 ["StaffName", ticket.staffName],
                 ["StaffID", ticket.staffId],
@@ -1380,7 +1383,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
         </div>
 
         {/* ── RIGHT: actions panel ── */}
-        <div style={{ width:280, display:"flex", flexDirection:"column", gap:16, flexShrink:0 }}>
+        <div style={{ flex: "1 1 280px", maxWidth: "100%", display:"flex", flexDirection:"column", gap:16, flexShrink:0 }}>
           
           {/* Support representative status (For Staff Portal) */}
           {!isAdmin && (
@@ -1600,29 +1603,62 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
 function RequestHistory({ tickets, office, onOpenTicket }: { tickets: Ticket[]; office: string; onOpenTicket: (t: Ticket) => void }) {
   const statuses = ["All","Submitted","Assigned","In Progress","Resolved","Closed"];
   const [activeStatus, setActiveStatus] = useState("All");
+  const [search, setSearch] = useState("");
 
   const counts = statuses.reduce((acc, s) => {
     acc[s] = s === "All" ? tickets.length : tickets.filter(t => t.status === s).length;
     return acc;
   }, {} as Record<string, number>);
 
-  const filtered = activeStatus === "All" ? tickets : tickets.filter(t => t.status === activeStatus);
+  const filtered = (activeStatus === "All" ? tickets : tickets.filter(t => t.status === activeStatus))
+    .filter(t => {
+      if (!search.trim()) return true;
+      const q = search.toLowerCase();
+      return (
+        t.id.toLowerCase().includes(q) ||
+        t.title.toLowerCase().includes(q) ||
+        (t.category && t.category.toLowerCase().includes(q)) ||
+        (t.technician && t.technician.toLowerCase().includes(q))
+      );
+    });
 
   return (
     <div>
       <div style={{ fontSize:11, color:C.coral, letterSpacing:1.2, textTransform:"uppercase", fontWeight:700, marginBottom:6 }}>MY REQUESTS</div>
-      <h1 style={{ fontSize:34, fontWeight:800, color:C.slate, margin:"0 0 8px", letterSpacing:-0.8 }}>Request history</h1>
+      <h1 className="text-2xl sm:text-[34px]" style={{ fontWeight:800, color:C.slate, margin:"0 0 8px", letterSpacing:-0.8 }}>Request history</h1>
       <p style={{ fontSize:15, color:C.textSub, margin:"0 0 32px" }}>Track the status and progress of all your submitted requests · {office}</p>
-      <div style={{ display:"flex", gap:8, marginBottom:28, flexWrap:"wrap" }}>
-        {statuses.map(s => {
-          const active = activeStatus === s;
-          return (
-            <button key={s} onClick={() => setActiveStatus(s)}
-              style={{ padding:"8px 16px", borderRadius:24, border:`1.5px solid ${active ? C.slate : C.border}`, background:active ? C.slate : C.card, color:active ? (currentTheme === "dark" ? "#0F172A" : "#fff") : C.textSub, fontSize:13, fontWeight:600, cursor:"pointer", display:"flex", alignItems:"center", gap:7, fontFamily:F }}>
-              {s}<span style={{ fontWeight:700, fontSize:12, color:active ? "rgba(255,255,255,0.55)" : C.textMuted }}>{counts[s]}</span>
-            </button>
-          );
-        })}
+      <div style={{ display:"flex", justifyContent:"space-between", gap:16, marginBottom:28, flexWrap:"wrap", alignItems:"center" }}>
+        <div style={{ display:"flex", gap:8 }} className="overflow-x-auto no-scrollbar max-w-full -my-1 py-1">
+          {statuses.map(s => {
+            const active = activeStatus === s;
+            return (
+              <button key={s} onClick={() => setActiveStatus(s)}
+                style={{ padding:"6px 12px", borderRadius:24, border:`1.5px solid ${active ? C.slate : C.border}`, background:active ? C.slate : C.card, color:active ? (currentTheme === "dark" ? "#0F172A" : "#fff") : C.textSub, fontSize:12, fontWeight:600, cursor:"pointer", display:"flex", alignItems:"center", gap:6, fontFamily:F, whiteSpace:"nowrap" }}>
+                {s}<span style={{ fontWeight:700, fontSize:11, color:active ? "rgba(255,255,255,0.55)" : C.textMuted }}>{counts[s]}</span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="w-full sm:w-auto">
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="🔍 Search my requests..."
+            style={{
+              padding: "8px 16px",
+              borderRadius: 24,
+              border: `1.5px solid ${C.border}`,
+              fontSize: 13,
+              background: C.card,
+              color: C.slate,
+              fontFamily: F,
+              outline: "none",
+              minWidth: "220px",
+              width: "100%"
+            }}
+          />
+        </div>
       </div>
       <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
         {filtered.length === 0 && (
@@ -1639,12 +1675,12 @@ function RequestHistory({ tickets, office, onOpenTicket }: { tickets: Ticket[]; 
               style={{ background:C.card, borderRadius:16, border:`1.5px solid ${C.border}`, padding:"22px 26px", transition:"border-color 0.15s, box-shadow 0.15s", cursor:"pointer" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor=C.coral; e.currentTarget.style.boxShadow="0 4px 16px rgba(255,68,79,0.08)"; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.boxShadow="none"; }}>
-              <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:8 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-2">
+                <div className="flex items-center gap-2.5">
                   <span style={{ fontSize:12, color:C.textMuted, fontWeight:500 }}>{t.id}</span>
                   <PriBadge p={t.priority} />
                 </div>
-                <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                <div className="flex items-center gap-3">
                   <StaBadge s={t.status} />
                   <span style={{ fontSize:13, color:C.textMuted }}>{t.date}</span>
                 </div>
@@ -1764,9 +1800,9 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
   return (
     <div>
       <div style={{ fontSize:11, color:C.coral, letterSpacing:1.2, textTransform:"uppercase", fontWeight:700, marginBottom:6 }}>NEW REQUEST</div>
-      <h1 style={{ fontSize:34, fontWeight:800, color:C.slate, margin:"0 0 8px", letterSpacing:-0.8 }}>Submit a request</h1>
+      <h1 className="text-2xl sm:text-[34px]" style={{ fontWeight:800, color:C.slate, margin:"0 0 8px", letterSpacing:-0.8 }}>Submit a request</h1>
       <p style={{ fontSize:15, color:C.textSub, margin:"0 0 32px" }}>Describe your issue and the right team will respond within SLA targets.</p>
-      <div style={{ background:C.card, borderRadius:20, border:`1.5px solid ${C.border}`, padding:"36px" }}>
+      <div className="p-4 sm:p-[36px]" style={{ background:C.card, borderRadius:20, border:`1.5px solid ${C.border}` }}>
         <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:18 }}>Request details</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
           <div>
@@ -1823,9 +1859,9 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
         </div>
         <div style={{ marginBottom:20 }}>
           <label style={lbl}>Urgency <span style={{ color:C.coral }}>*</span></label>
-          <div className="flex flex-wrap sm:flex-nowrap gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             {["Low","Medium","High","Critical"].map(p => { const cfg=priorityCfg(p); const active=priority===p; return (
-              <div key={p} onClick={() => setPriority(p)} style={{ flex:1, minWidth:"80px", padding:"12px", borderRadius:12, border:`2px solid ${active?(p==="Critical"?C.coral:cfg.dot):C.border}`, background:active?cfg.bg:C.card, cursor:"pointer", textAlign:"center", fontWeight:600, fontSize:13, color:active?cfg.color:C.textSub, transition:"all 0.15s" }}>{p}</div>
+              <div key={p} onClick={() => setPriority(p)} style={{ padding:"12px", borderRadius:12, border:`2px solid ${active?(p==="Critical"?C.coral:cfg.dot):C.border}`, background:active?cfg.bg:C.card, cursor:"pointer", textAlign:"center", fontWeight:600, fontSize:13, color:active?cfg.color:C.textSub, transition:"all 0.15s" }}>{p}</div>
             ); })}
           </div>
         </div>
@@ -1907,8 +1943,8 @@ function SubmitSuccess({ onAnother, onHistory }: { onAnother: () => void; onHist
   return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:"55vh", gap:16, textAlign:"center" }}>
       <div style={{ width:76, height:76, borderRadius:"50%", background:C.greenLight, display:"flex", alignItems:"center", justifyContent:"center", fontSize:34 }}>✅</div>
-      <h2 style={{ fontSize:30, fontWeight:800, color:C.slate, margin:0, letterSpacing:-0.6 }}>Request submitted</h2>
-      <p style={{ fontSize:15, color:C.textSub, maxWidth:400, lineHeight:1.65, margin:0 }}>Your ticket has been created and routed to the right team.<br />You'll receive updates here and by email.</p>
+      <h2 className="text-2xl sm:text-3xl" style={{ fontWeight:800, color:C.slate, margin:0, letterSpacing:-0.6 }}>Request submitted</h2>
+      <p className="text-sm sm:text-base px-2" style={{ color:C.textSub, maxWidth:400, lineHeight:1.65, margin:0 }}>Your ticket has been created and routed to the right team. You'll receive updates here and by email.</p>
       <div style={{ display:"flex", gap:12, marginTop:8 }}>
         <button onClick={onAnother} style={{ padding:"11px 22px", borderRadius:12, border:`1.5px solid ${C.slate}`, background:C.card, color:C.slate, fontWeight:700, cursor:"pointer", fontSize:14, fontFamily:F }}>Submit another</button>
         <button onClick={onHistory} style={{ padding:"11px 22px", borderRadius:12, border:"none", background:C.coral, color:"#fff", fontWeight:700, cursor:"pointer", fontSize:14, fontFamily:F }}>View my requests</button>
@@ -1925,11 +1961,25 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
   const [activeS, setActiveS] = useState("All");
   const [activeP, setActiveP] = useState("All");
   const [sort, setSort]       = useState("Urgency");
+  const [search, setSearch]   = useState("");
 
   const priOrder: Record<string, number> = { Critical:0, High:1, Medium:2, Low:3 };
   const staOrder: Record<string, number> = { Submitted:0, Assigned:1, "In Progress":2, Resolved:3 };
 
-  let shown = filtered.filter(t => activeS === "All" || t.status === activeS).filter(t => activeP === "All" || t.priority === activeP);
+  let shown = filtered
+    .filter(t => activeS === "All" || t.status === activeS)
+    .filter(t => activeP === "All" || t.priority === activeP)
+    .filter(t => {
+      if (!search.trim()) return true;
+      const q = search.toLowerCase();
+      return (
+        t.id.toLowerCase().includes(q) ||
+        t.title.toLowerCase().includes(q) ||
+        (t.category && t.category.toLowerCase().includes(q)) ||
+        (t.staffName && t.staffName.toLowerCase().includes(q)) ||
+        (t.technician && t.technician.toLowerCase().includes(q))
+      );
+    });
 
   if (sort === "Urgency") {
     shown = [...shown].sort((a,b) => (priOrder[a.priority] ?? 99) - (priOrder[b.priority] ?? 99));
@@ -1952,10 +2002,10 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
   ];
 
   const PillRow = ({ active, setActive, items }: { active: string; setActive: (s: string) => void; items: string[] }) => (
-    <div style={{ display:"flex", gap:8 }}>
+    <div style={{ display:"flex", gap:8 }} className="overflow-x-auto no-scrollbar max-w-full -my-1 py-1">
       {items.map(s => (
         <button key={s} onClick={() => setActive(s)}
-          style={{ padding:"7px 16px", borderRadius:20, border:`1.5px solid ${active===s?C.slate:C.border}`, background:active===s?C.slate:C.card, color:active===s?(currentTheme === "dark" ? "#0F172A" : "#fff"):C.textSub, fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:F }}>
+          style={{ padding:"6px 12px", borderRadius:20, border:`1.5px solid ${active===s?C.slate:C.border}`, background:active===s?C.slate:C.card, color:active===s?(currentTheme === "dark" ? "#0F172A" : "#fff"):C.textSub, fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:F, whiteSpace:"nowrap" }}>
           {s}
         </button>
       ))}
@@ -1965,7 +2015,7 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
   return (
     <div>
       <div style={{ fontSize:11, color:C.coral, letterSpacing:1.2, textTransform:"uppercase", fontWeight:700, marginBottom:6 }}>{title}</div>
-      <h1 style={{ fontSize:34, fontWeight:800, color:C.slate, margin:"0 0 6px", letterSpacing:-0.8 }}>Incoming requests</h1>
+      <h1 className="text-2xl sm:text-[34px]" style={{ fontWeight:800, color:C.slate, margin:"0 0 6px", letterSpacing:-0.8 }}>Incoming requests</h1>
       <p style={{ fontSize:15, color:C.textSub, margin:"0 0 32px" }}>Manage and resolve requests assigned to your team · {office}</p>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {kpis.map(k => (
@@ -1977,10 +2027,28 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
       </div>
       <div style={{ display:"flex", gap:10, marginBottom:16, alignItems:"center", flexWrap:"wrap" }}>
         <PillRow active={activeS} setActive={setActiveS} items={statuses} />
-        <div style={{ width:1, height:28, background:C.border, margin:"0 4px" }} />
+        <div className="hidden md:block" style={{ width:1, height:28, background:C.border, margin:"0 4px" }} />
         <PillRow active={activeP} setActive={setActiveP} items={priorities} />
-        <div className="w-full sm:w-auto flex items-center gap-2 sm:ml-auto mt-2 sm:mt-0">
-          <span style={{ fontSize:13, color:C.textSub }}>Sort:</span>
+        <div className="w-full sm:w-auto flex flex-wrap items-center gap-2 sm:ml-auto mt-2 sm:mt-0">
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="🔍 Search requests..."
+            style={{
+              padding: "7px 12px",
+              borderRadius: 8,
+              border: `1px solid ${C.border}`,
+              fontSize: 13,
+              background: C.card,
+              color: C.slate,
+              fontFamily: F,
+              outline: "none",
+              minWidth: "160px",
+              flex: "1 1 auto"
+            }}
+          />
+          <span style={{ fontSize:13, color:C.textSub, marginLeft: 6 }}>Sort:</span>
           <select value={sort} onChange={e => setSort(e.target.value)} style={{ padding:"7px 12px", borderRadius:8, border:`1px solid ${C.border}`, fontSize:13, background:C.card, color:C.slate, fontFamily:F, outline:"none" }}>
             <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>Urgency</option>
             <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>Status</option>
