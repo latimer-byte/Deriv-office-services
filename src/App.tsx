@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import AdminDashboard from "./components/AdminDashboard";
+import HrPortal, { HrTicket } from "./components/HrPortal";
+import CompliancePortal, { ComplianceReport } from "./components/CompliancePortal";
 
 import neonCyprus from "./assets/images/neon_cyprus_1783766539962.jpg";
 import neonMalta from "./assets/images/neon_malta_1783766550652.jpg";
@@ -412,6 +414,8 @@ const PORTALS = [
   { id:"it",         label:"IT Admin",             desc:"Manage technology, software, and hardware requests",           icon:"💻", iconBg:C.purple },
   { id:"facilities", label:"Facilities Management", desc:"Handle physical space, equipment, and infrastructure issues",  icon:"🔧", iconBg:"#0F766E" },
   { id:"admin",      label:"Admin Office",          desc:"Process administrative requests, supplies, and general tasks", icon:"📋", iconBg:"#475569" },
+  { id:"hr",         label:"HR Portal",             desc:"Raise confidential complaints, request consultations, and track grievances", icon:"💼", iconBg:"#8B5CF6" },
+  { id:"compliance", label:"Compliance Portal",     desc:"Anonymous whistleblower gateway. Report misconduct with zero identity leaks", icon:"🛡️", iconBg:"#DC2626" },
 ];
 
 // ─── Deriv Global Office Locations with Neon Landmarks ────────────────────────
@@ -902,10 +906,10 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
         </select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl w-full" style={{ zIndex: 1 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl w-full" style={{ zIndex: 1 }}>
         {PORTALS.map(p => {
           // Dynamic custom glowing indicators based on portal roles
-          const glowColor = p.id === "staff" ? C.coral : p.id === "it" ? C.purple : p.id === "facilities" ? "#0F766E" : "#475569";
+          const glowColor = p.id === "staff" ? C.coral : p.id === "it" ? C.purple : p.id === "facilities" ? "#0F766E" : p.id === "hr" ? "#8B5CF6" : p.id === "compliance" ? "#DC2626" : "#475569";
           return (
             <div key={p.id} onClick={() => onSelect(p.id)}
               style={{
@@ -1017,6 +1021,8 @@ function TopBar({ portal, office, onBack, view, setView, onPortalChange, theme, 
             <option value="it">💻 IT Admin</option>
             <option value="facilities">🔧 Facilities</option>
             <option value="admin">📋 Admin Office</option>
+            <option value="hr">💼 HR Portal</option>
+            <option value="compliance">🛡️ Compliance Portal</option>
           </select>
         </div>
       </div>
@@ -2110,6 +2116,107 @@ export default function App() {
   const [toast, setToast]         = useState<string | null>(null);
   const [ticketStore, setTicketStore] = useState<Record<string, Ticket[]>>(BASE_TICKETS);
 
+  // HR & Compliance State
+  const [hrTickets, setHrTickets] = useState<HrTicket[]>(() => [
+    {
+      id: "HR-2026-001",
+      subject: "Inquiry regarding revised dental coverage limits",
+      type: "Benefits",
+      description: "Hi HR, I noticed that the annual limit for dental claims was updated in the recent handbook. Could you clarify if surgical extraction is fully covered or subject to a co-payment?",
+      confidentiality: "Standard",
+      isAnonymous: false,
+      staffName: "Ahmad Ridzuan",
+      staffId: "DRV-04512",
+      date: "10 Jul 2026",
+      status: "Reviewed",
+      assignedRep: "Shirley Wong (Senior Benefits Specialist)",
+      office: "Cyberjaya, Malaysia (HQ)",
+      thread: [
+        { type: "status", from: "None", to: "Submitted", by: "Ahmad Ridzuan", time: "10 Jul, 09:00", note: "Grievance file successfully registered." },
+        { type: "status", from: "Submitted", to: "Reviewed", by: "Shirley Wong", time: "11 Jul, 09:30", note: "Assigning to Benefits specialist for details." },
+        { type: "comment", by: "Shirley Wong (Senior Benefits Specialist)", time: "11 Jul, 09:35", note: "Hi Ahmad, I am looking into this with our insurance provider. Regular extractions are 100% covered, while surgical extraction has a 10% co-pay up to your annual maximum." }
+      ]
+    },
+    {
+      id: "HR-2026-002",
+      subject: "Interpersonal conflict during project sprints",
+      type: "Grievance",
+      description: "I am raising a formal concern regarding communication style and collaborative behavior from one of the senior leads during our retrospective sessions. It has created a hostile environment.",
+      confidentiality: "Sensitive - HR Managers Only",
+      isAnonymous: true,
+      staffName: "Anonymous HR Consultation",
+      staffId: "ANON-HR",
+      date: "9 Jul 2026",
+      status: "Under Investigation",
+      assignedRep: "Marcus Tan (HR Director)",
+      office: "Cyberjaya, Malaysia (HQ)",
+      thread: [
+        { type: "status", from: "None", to: "Submitted", by: "Anonymous Staff", time: "09 Jul, 13:30", note: "Grievance file successfully registered." },
+        { type: "status", from: "Submitted", to: "Under Investigation", by: "Marcus Tan", time: "9 Jul, 14:00", note: "Escalated to Director level due to sensitivity." },
+        { type: "comment", by: "Marcus Tan (HR Director)", time: "10 Jul, 11:00", note: "We have scheduled a private one-on-one session to discuss the details. Confidentiality is strictly assured." }
+      ]
+    },
+    {
+      id: "HR-2026-003",
+      subject: "Relocation allowance reimbursement processing time",
+      type: "Payroll/Salary",
+      description: "Hi, I submitted my flight and moving invoices three weeks ago. Could you please let me know when this will reflect in my bank account?",
+      confidentiality: "Standard",
+      isAnonymous: false,
+      staffName: "Andreas Georgiou",
+      staffId: "DRV-12093",
+      date: "8 Jul 2026",
+      status: "Resolved",
+      assignedRep: "Elena Demetriou (HR Business Partner)",
+      office: "Limassol, Cyprus",
+      thread: [
+        { type: "status", from: "None", to: "Submitted", by: "Andreas Georgiou", time: "08 Jul, 09:15", note: "Grievance file successfully registered." },
+        { type: "status", from: "Submitted", to: "Resolved", by: "Elena Demetriou", time: "9 Jul, 10:00", note: "Approved and submitted to Finance." },
+        { type: "comment", by: "Elena Demetriou (HR Business Partner)", time: "9 Jul, 10:05", note: "Hi Andreas, this has been processed and will be paid out with this month's salary cycle on July 25th." }
+      ]
+    }
+  ]);
+
+  const [complianceReports, setComplianceReports] = useState<ComplianceReport[]>(() => [
+    {
+      id: "COM-2026-N2B9",
+      category: "Conflict of Interest",
+      description: "A manager in the procurement team is allegedly awarding software licensing contracts to a vendor company owned by their spouse, without declaring this connection or obtaining competing bids.",
+      incidentDate: "2026-06-15",
+      department: "Procurement",
+      office: "Cyberjaya, Malaysia (HQ)",
+      dateSubmitted: "05 Jul 2026",
+      status: "Under Investigation",
+      hasEvidence: true,
+      timeline: [
+        { date: "05 Jul 2026", title: "Report Received Anonymously", description: "The compliance office received the anonymous report and assigned code COM-2026-N2B9.", by: "Compliance Officer" },
+        { date: "06 Jul 2026", title: "Preliminary Assessment", description: "Conflict of interest policies reviewed. Vendor ownership records searched and spouse relationship verified.", by: "Compliance Auditor" },
+        { date: "08 Jul 2026", title: "Formal Investigation Opened", description: "Internal Audit has been notified to pull procurement records for the specified software vendor.", by: "Compliance Board" }
+      ],
+      messages: [
+        { id: "msg-1", sender: "Compliance Officer", text: "Thank you for bringing this matter to our attention. Do you have copies of the bidding documents or communication records regarding these awards?", date: "06 Jul 2026, 09:15" },
+        { id: "msg-2", sender: "Anonymous Reporter", text: "I don't have copies of the contracts, but you can check the approval logs for March 2026. The approval was signed off without the standard three-quote rule.", date: "07 Jul 2026, 18:40" },
+        { id: "msg-3", sender: "Compliance Officer", text: "Received. We are pulling the approval logs for March 2026. This is very helpful.", date: "08 Jul 2026, 10:30" }
+      ]
+    }
+  ]);
+
+  const handleAddHrTicket = (newTicket: HrTicket) => {
+    setHrTickets(prev => [newTicket, ...prev]);
+  };
+
+  const handleUpdateHrTicket = (updated: HrTicket) => {
+    setHrTickets(prev => prev.map(t => t.id === updated.id ? updated : t));
+  };
+
+  const handleAddComplianceReport = (newReport: ComplianceReport) => {
+    setComplianceReports(prev => [newReport, ...prev]);
+  };
+
+  const handleUpdateComplianceReport = (updated: ComplianceReport) => {
+    setComplianceReports(prev => prev.map(r => r.id === updated.id ? updated : r));
+  };
+
   // Preload all location images instantly
   React.useEffect(() => {
     NEON_LOCATIONS.forEach(loc => {
@@ -2156,7 +2263,7 @@ export default function App() {
 
   if (!portal) return <PortalSelector onSelect={p => { setPortal(p); setView(p==="staff"?"requests":"incoming"); }} office={office} setOffice={setOffice} theme={theme} toggleTheme={toggleTheme} />;
 
-  const isAdmin = portal !== "staff";
+  const isAdmin = portal !== "staff" && portal !== "hr" && portal !== "compliance";
 
   return (
     <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:C.bg, fontFamily:F, transition: "background 0.2s ease-out, color 0.2s ease-out" }}>
@@ -2164,6 +2271,30 @@ export default function App() {
       <style>{`@keyframes slideup { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }`}</style>
       <TopBar portal={portal} office={office} onPortalChange={p => { setPortal(p); setView(p === "staff" ? "requests" : "incoming"); }} onBack={() => { setPortal(null); setView("requests"); setSubmitted(false); setOpenTicket(null); }} view={view} setView={v => { setView(v); setSubmitted(false); setOpenTicket(null); }} theme={theme} toggleTheme={toggleTheme} />
       <Page>
+        {/* HR Portal flow */}
+        {portal === "hr" && (
+          <HrPortal
+            office={office}
+            theme={theme}
+            onBack={() => { setPortal(null); setView("requests"); }}
+            hrTickets={hrTickets}
+            onAddHrTicket={handleAddHrTicket}
+            onUpdateHrTicket={handleUpdateHrTicket}
+          />
+        )}
+
+        {/* Compliance Portal flow */}
+        {portal === "compliance" && (
+          <CompliancePortal
+            office={office}
+            theme={theme}
+            onBack={() => { setPortal(null); setView("requests"); }}
+            complianceReports={complianceReports}
+            onAddComplianceReport={handleAddComplianceReport}
+            onUpdateComplianceReport={handleUpdateComplianceReport}
+          />
+        )}
+
         {/* Staff flows */}
         {portal === "staff" && view === "requests" && !activeTicket && <RequestHistory tickets={tickets} office={office} onOpenTicket={t => setOpenTicket(t)} />}
         {portal === "staff" && view === "requests" && activeTicket  && <TicketDetail ticket={activeTicket} onBack={() => setOpenTicket(null)} onUpdate={handleUpdate} isAdmin={false} />}
