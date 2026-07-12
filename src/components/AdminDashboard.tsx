@@ -386,25 +386,26 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title,
       </div>
 
       {/* KPI Cards Grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 32 }}>
+      <div className="grid grid-cols-4 gap-2.5 sm:gap-4 mb-8">
         {kpis.map((k, i) => (
           <div
             key={i}
+            className="p-3.5 sm:p-5"
             style={{
               background: k.bg,
               border: `1.5px solid ${k.border}`,
               borderRadius: 16,
-              padding: "20px 24px",
-              boxShadow: "0 2px 8px rgba(24,28,37,0.02)"
+              boxShadow: "0 2px 8px rgba(24,28,37,0.02)",
+              minWidth: 0
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <span style={{ fontSize: 11, color: C.textSub, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.6 }}>
+            <div className="flex justify-between items-center mb-1.5 sm:mb-3 gap-1">
+              <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-ellipsis overflow-hidden whitespace-nowrap" style={{ color: C.textSub }} title={k.label}>
                 {k.label}
               </span>
-              <span style={{ fontSize: 18 }}>{k.icon}</span>
+              <span className="text-sm sm:text-lg flex-shrink-0">{k.icon}</span>
             </div>
-            <div style={{ fontSize: 36, fontWeight: 800, color: k.color, lineHeight: 1 }}>
+            <div className="text-xl sm:text-[32px] font-extrabold text-ellipsis overflow-hidden whitespace-nowrap" style={{ color: k.color, lineHeight: 1 }}>
               {k.value}
             </div>
           </div>
@@ -431,12 +432,12 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title,
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={C.coral} stopOpacity={0.15}/>
+                  <linearGradient id="colorRequests" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={C.coral} stopOpacity={0.2}/>
                     <stop offset="95%" stopColor={C.coral} stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorResolved" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={C.green} stopOpacity={0.15}/>
+                    <stop offset="5%" stopColor={C.green} stopOpacity={0.2}/>
                     <stop offset="95%" stopColor={C.green} stopOpacity={0}/>
                   </linearGradient>
                 </defs>
@@ -448,8 +449,8 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title,
                   itemStyle={{ color: C.text }}
                   labelStyle={{ fontWeight: 700, color: C.slate }}
                 />
-                <Area type="monotone" dataKey="Requests" stroke={C.coral} strokeWidth={2.5} fillOpacity={1} fill="url(#colorVolume)" />
-                <Area type="monotone" dataKey="Resolved" stroke={C.green} strokeWidth={2} fillOpacity={1} fill="url(#colorResolved)" />
+                <Area type="monotone" dataKey="Requests" stroke={C.coral} strokeWidth={3} fillOpacity={1} fill="url(#colorRequests)" />
+                <Area type="monotone" dataKey="Resolved" stroke={C.green} strokeWidth={3} fillOpacity={1} fill="url(#colorResolved)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -568,7 +569,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title,
                   }}
                 >
                   <div style={{ display: "flex", flexDirection: "column", gap: 2, maxWidth: "70%" }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: C.slate, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <div title={t.title} style={{ fontSize: 13, fontWeight: 700, color: C.slate, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {t.title}
                     </div>
                     <div style={{ fontSize: 11, color: C.textSub }}>
@@ -651,7 +652,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title,
                   return (
                     <div key={t.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.card, padding: "10px 12px", borderRadius: 10, border: `1px solid ${C.borderLight}` }}>
                       <div style={{ display: "flex", flexDirection: "column", gap: 2, maxWidth: "60%" }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: C.slate, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.title}</span>
+                        <span title={t.title} style={{ fontSize: 12, fontWeight: 700, color: C.slate, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.title}</span>
                         <span style={{ fontSize: 11, color: C.textSub }}>{t.id} · Requester: {t.staffName}</span>
                       </div>
                       <div style={{ textAlign: "right" }}>

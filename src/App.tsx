@@ -46,6 +46,7 @@ export interface Ticket {
   description: string;
   technician: string;
   thread: ThreadEntry[];
+  attachments?: { name: string; size: string; type: string; url?: string }[];
 }
 
 // ─── Deriv Brand Tokens ───────────────────────────────────────────────────────
@@ -595,9 +596,41 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
   }, [localToast]);
 
   return (
-    <div style={{ minHeight:"100vh", background: theme === "dark" ? "#0F172A" : "#F4F5F7", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"40px 20px", fontFamily:F, position: "relative", overflowX: "hidden" }}>
-      {/* Floating Theme Toggle */}
-      <div style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}>
+    <div style={{ minHeight:"100vh", background: theme === "dark" ? "#0F172A" : "#F4F5F7", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-start", padding:"24px 20px 40px", fontFamily:F, position: "relative", overflowX: "hidden" }}>
+      {/* Dynamic Background Grid Mesh */}
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255, 68, 79, 0.03) 1px, transparent 1px), radial-gradient(rgba(139, 92, 246, 0.02) 1.5px, transparent 1.5px)", backgroundSize: "32px 32px", backgroundPosition: "0 0, 16px 16px", pointerEvents: "none", zIndex: 0 }} />
+      <div style={{ position: "absolute", top: "15%", left: "10%", width: "450px", height: "450px", borderRadius: "50%", background: `radial-gradient(circle, ${C.coral}05 0%, transparent 70%)`, pointerEvents: "none", zIndex: 0 }} />
+      <div style={{ position: "absolute", bottom: "15%", right: "10%", width: "500px", height: "500px", borderRadius: "50%", background: `radial-gradient(circle, ${C.purple}05 0%, transparent 70%)`, pointerEvents: "none", zIndex: 0 }} />
+
+      {/* Top Header Bar containing Brand logo and Theme Switcher (Perfect spacing, never overlaps on mobile) */}
+      <div style={{
+        width: "100%",
+        maxWidth: "1000px",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 44,
+        zIndex: 1,
+        padding: "0 4px",
+        boxSizing: "border-box",
+        gap: 12
+      }}>
+        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+            <div style={{ width:36, height:36, borderRadius:8, background:C.coral, display:"flex", alignItems:"center", justifyContent:"center" }}>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M3 4h9a7 7 0 0 1 0 14H3V4z" fill="white" fillOpacity="0.9"/>
+                <circle cx="12" cy="11" r="3.5" fill="white" fillOpacity="0.5"/>
+              </svg>
+            </div>
+            <span style={{ fontFamily:F, fontWeight:800, fontSize:20, color: theme === "dark" ? "#F8FAFC" : "#181C25", letterSpacing:-0.5 }}>Deriv</span>
+          </div>
+          <div style={{ width:1, height:22, background: theme === "dark" ? "#334155" : "#E4E7ED" }} />
+          <span style={{ fontSize:13, color: theme === "dark" ? "#94A3B8" : "#515A70", fontWeight:500, whiteSpace: "nowrap" }}>Office Services</span>
+        </div>
+
+        {/* Theme Toggle Button */}
         <button
           onClick={toggleTheme}
           style={{
@@ -621,25 +654,6 @@ function PortalSelector({ onSelect, office, setOffice, theme, toggleTheme }: { o
         >
           {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
         </button>
-      </div>
-
-      {/* Dynamic Background Grid Mesh */}
-      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255, 68, 79, 0.03) 1px, transparent 1px), radial-gradient(rgba(139, 92, 246, 0.02) 1.5px, transparent 1.5px)", backgroundSize: "32px 32px", backgroundPosition: "0 0, 16px 16px", pointerEvents: "none", zIndex: 0 }} />
-      <div style={{ position: "absolute", top: "15%", left: "10%", width: "450px", height: "450px", borderRadius: "50%", background: `radial-gradient(circle, ${C.coral}05 0%, transparent 70%)`, pointerEvents: "none", zIndex: 0 }} />
-      <div style={{ position: "absolute", bottom: "15%", right: "10%", width: "500px", height: "500px", borderRadius: "50%", background: `radial-gradient(circle, ${C.purple}05 0%, transparent 70%)`, pointerEvents: "none", zIndex: 0 }} />
-
-      <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:44, zIndex: 1 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-          <div style={{ width:36, height:36, borderRadius:8, background:C.coral, display:"flex", alignItems:"center", justifyContent:"center" }}>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M3 4h9a7 7 0 0 1 0 14H3V4z" fill="white" fillOpacity="0.9"/>
-              <circle cx="12" cy="11" r="3.5" fill="white" fillOpacity="0.5"/>
-            </svg>
-          </div>
-          <span style={{ fontFamily:F, fontWeight:800, fontSize:20, color: theme === "dark" ? "#F8FAFC" : "#181C25", letterSpacing:-0.5 }}>Deriv</span>
-        </div>
-        <div style={{ width:1, height:22, background: theme === "dark" ? "#334155" : "#E4E7ED" }} />
-        <span style={{ fontSize:13, color: theme === "dark" ? "#94A3B8" : "#515A70", fontWeight:500 }}>Office Services</span>
       </div>
 
       {/* ─── Iconic Global Locations Section (Moved to the Top) ─────────────────── */}
@@ -1028,13 +1042,13 @@ function TopBar({ portal, office, onBack, view, setView, onPortalChange, theme, 
       </div>
 
       {/* Right side: Location & Action buttons */}
-      <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+      <div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
         <div className="hidden sm:flex px-2.5 py-1 rounded-full bg-[#2A3042] text-[#9AA0B4] text-[11px] font-semibold items-center gap-1.5 whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
           <span>📍</span>{office.split(",")[0]}
         </div>
         
         {/* Navigation Items - Scrollable horizontally on narrow screens */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full -my-1 py-1">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar flex-1 sm:flex-initial min-w-0 -my-1 py-1">
           {navItems.map(n => (
             <button key={n.id} onClick={() => setView(n.id)}
               style={{ padding:"5px 10px", borderRadius:6, border:`1.5px solid ${view===n.id ? C.coral : C.slateMid}`, background:view===n.id ? C.coral : "transparent", color:view===n.id ? "#fff" : "#9AA0B4", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:F, whiteSpace:"nowrap" }}>
@@ -1230,6 +1244,42 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
             <div style={{ padding:"14px 16px", background:C.bg, borderRadius:10, fontSize:14, color:C.text, lineHeight:1.65 }}>
               {ticket.description}
             </div>
+            {ticket.attachments && ticket.attachments.length > 0 && (
+              <div style={{ marginTop: 20 }}>
+                <div style={{ fontSize:11, color:C.coral, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:8 }}>Attachments</div>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:10 }}>
+                  {ticket.attachments.map((file, idx) => (
+                    <a
+                      key={idx}
+                      href={file.url || "#"}
+                      download={file.name}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        background: currentTheme === "dark" ? "#1E293B" : "#F8FAFC",
+                        border: `1.5px solid ${C.border}`,
+                        borderRadius: 10,
+                        padding: "8px 14px",
+                        textDecoration: "none",
+                        color: C.slate,
+                        cursor: "pointer",
+                        maxWidth: "280px"
+                      }}
+                    >
+                      <span style={{ fontSize: 18 }}>📄</span>
+                      <div style={{ display: "flex", flexDirection: "column", minWidth: 0, flex: 1 }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: C.slate, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{file.name}</span>
+                        <span style={{ fontSize: 11, color: C.textMuted }}>{file.size}</span>
+                      </div>
+                      <span style={{ fontSize: 12, color: C.coral, marginLeft: 4 }}>⬇️</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Staff & Asset info */}
@@ -1320,7 +1370,11 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
                               {e.note && <div style={{ fontSize:13, color:C.text, background:"#FFF8F8", border:`1.5px solid ${C.coralMid}`, padding:"10px 14px", borderRadius:10, lineHeight:1.5 }}>{e.note}</div>}
                             </div>
                           ) : e.from && e.to ? (
-                            <span>Status changed: <StaBadge s={e.from} /> → <StaBadge s={e.to} /></span>
+                            e.from === e.to ? (
+                              <span>Status: <StaBadge s={e.to} /></span>
+                            ) : (
+                              <span>Status changed: <StaBadge s={e.from} /> → <StaBadge s={e.to} /></span>
+                            )
                           ) : (
                             <span>Activity update</span>
                           )}
@@ -1691,7 +1745,7 @@ function RequestHistory({ tickets, office, onOpenTicket }: { tickets: Ticket[]; 
                   <span style={{ fontSize:13, color:C.textMuted }}>{t.date}</span>
                 </div>
               </div>
-              <div style={{ fontWeight:700, fontSize:17, color:C.slate, marginBottom:6 }}>{t.title}</div>
+              <div title={t.title} style={{ fontWeight:700, fontSize:17, color:C.slate, marginBottom:6 }}>{t.title}</div>
               <div style={{ fontSize:13, color:C.textSub }}>
                 {[t.category, t.dept, `${t.location}${t.desk ? `, ${t.desk}` : ""}`].join(" · ")}
               </div>
@@ -1737,6 +1791,25 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
   const [assetModel, setAssetModel] = useState("");
   const [assetCondition, setAssetCondition] = useState("Not working at all");
   const [dragOver, setDragOver] = useState(false);
+  const [files, setFiles] = useState<{ name: string; size: string; type: string; url?: string }[]>([]);
+
+  const handleFiles = (fileList: FileList) => {
+    const newFiles = Array.from(fileList).map(file => {
+      let url = "";
+      try {
+        url = URL.createObjectURL(file);
+      } catch (e) {
+        // Fallback
+      }
+      return {
+        name: file.name,
+        size: (file.size / (1024 * 1024)).toFixed(2) + " MB",
+        type: file.type,
+        url: url
+      };
+    });
+    setFiles(prev => [...prev, ...newFiles]);
+  };
 
   const isAssetCategory = ASSET_CATEGORIES.includes(category);
   const inp = { width:"100%", padding:"11px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:14, outline:"none", background:C.card, boxSizing:"border-box", color:C.slate, fontFamily:F };
@@ -1788,6 +1861,7 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
       assetModel: isAssetCategory && assetModel.trim() ? assetModel.trim() : undefined,
       description: description.trim(),
       technician: "Unassigned",
+      attachments: files,
       thread: [
         {
           type: "status",
@@ -1929,12 +2003,63 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
         )}
         <SectionDivider title="Attachments" subtitle="Photos help the team diagnose the issue faster." />
         <div style={{ marginBottom:30 }}>
-          <div onDragOver={e => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)}
-            style={{ border:`2px dashed ${dragOver?C.coral:C.border}`, borderRadius:12, padding:"30px 24px", textAlign:"center", background:dragOver?C.coralLight:C.bg, transition:"all 0.15s", cursor:"pointer" }}>
+          <input
+            type="file"
+            multiple
+            id="file-upload-input"
+            style={{ display: "none" }}
+            onChange={e => {
+              if (e.target.files) {
+                handleFiles(e.target.files);
+              }
+            }}
+          />
+          <div
+            onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={e => {
+              e.preventDefault();
+              setDragOver(false);
+              if (e.dataTransfer.files) {
+                handleFiles(e.dataTransfer.files);
+              }
+            }}
+            onClick={() => document.getElementById("file-upload-input")?.click()}
+            style={{ border:`2px dashed ${dragOver?C.coral:C.border}`, borderRadius:12, padding:"30px 24px", textAlign:"center", background:dragOver?C.coralLight:C.bg, transition:"all 0.15s", cursor:"pointer" }}
+          >
             <div style={{ fontSize:26, marginBottom:8 }}>📎</div>
             <div style={{ fontSize:14, color:C.slate, fontWeight:600 }}>Drop files here or <span style={{ color:C.coral }}>browse</span></div>
             <div style={{ fontSize:12, color:C.textMuted, marginTop:4 }}>JPG, PNG, PDF, DOCX · Max 10 MB per file</div>
           </div>
+
+          {files.length > 0 && (
+            <div style={{ marginTop: 15, display: "flex", flexDirection: "column", gap: 8 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: C.slate, textTransform: "uppercase", fontFamily: F }}>Selected Files ({files.length})</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {files.map((f, idx) => (
+                  <div key={idx} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.bg, border: `1.5px solid ${C.borderLight}`, borderRadius: 10, padding: "8px 12px", fontFamily: F }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, overflow: "hidden" }}>
+                      <span style={{ fontSize: 18 }}>📄</span>
+                      <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: C.slate, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.name}</span>
+                        <span style={{ fontSize: 11, color: C.textMuted }}>{f.size}</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFiles(prev => prev.filter((_, i) => i !== idx));
+                      }}
+                      style={{ background: "none", border: "none", color: C.coral, fontWeight: 700, fontSize: 12, cursor: "pointer", padding: "4px" }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         <div style={{ display:"flex", justifyContent:"flex-end", gap:12 }}>
           <button style={{ padding:"12px 24px", borderRadius:12, border:`1.5px solid ${C.border}`, background:C.card, color:C.textSub, fontWeight:600, cursor:"pointer", fontSize:14, fontFamily:F }}>Cancel</button>
@@ -2023,11 +2148,11 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
       <div style={{ fontSize:11, color:C.coral, letterSpacing:1.2, textTransform:"uppercase", fontWeight:700, marginBottom:6 }}>{title}</div>
       <h1 className="text-2xl sm:text-[34px]" style={{ fontWeight:800, color:C.slate, margin:"0 0 6px", letterSpacing:-0.8 }}>Incoming requests</h1>
       <p style={{ fontSize:15, color:C.textSub, margin:"0 0 32px" }}>Manage and resolve requests assigned to your team · {office}</p>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-4 gap-2.5 sm:gap-4 mb-8">
         {kpis.map(k => (
-          <div key={k.label} style={{ background:k.bg, borderRadius:16, padding:"20px 22px", border:`1px solid ${k.numColor}20` }}>
-            <div style={{ fontSize:10, color:k.numColor, letterSpacing:1, textTransform:"uppercase", fontWeight:700, marginBottom:12, opacity:0.75 }}>{k.label}</div>
-            <div style={{ fontSize:48, fontWeight:800, color:k.numColor, lineHeight:1 }}>{k.value}</div>
+          <div key={k.label} className="p-3.5 sm:p-5" style={{ background:k.bg, borderRadius:16, border:`1px solid ${k.numColor}20`, minWidth: 0 }}>
+            <div className="text-[9px] sm:text-[10px] font-bold tracking-wider uppercase mb-2 text-ellipsis overflow-hidden whitespace-nowrap" style={{ color:k.numColor, opacity:0.75 }} title={k.label}>{k.label}</div>
+            <div className="text-xl sm:text-4xl font-extrabold text-ellipsis overflow-hidden whitespace-nowrap" style={{ color:k.numColor, lineHeight:1 }}>{k.value}</div>
           </div>
         ))}
       </div>
@@ -2082,10 +2207,10 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
                   onMouseLeave={e => e.currentTarget.style.background=C.card}>
                   <td style={{ padding:"16px 20px", color:C.textMuted, fontSize:12, fontWeight:500, whiteSpace:"nowrap" }}>{t.id}</td>
                   <td style={{ padding:"16px 20px", maxWidth:240 }}>
-                    <div style={{ fontWeight:700, color:C.slate, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{t.title}</div>
+                    <div title={t.title} style={{ fontWeight:700, color:C.slate, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{t.title}</div>
                     <div style={{ fontSize:12, color:C.textSub, marginTop:2 }}>{t.category}</div>
                   </td>
-                  <td style={{ padding:"16px 20px", color:C.textSub, fontSize:13, whiteSpace:"nowrap" }}>{t.location.length>22?t.location.slice(0,22)+"…":t.location}</td>
+                  <td title={t.location} style={{ padding:"16px 20px", color:C.textSub, fontSize:13, whiteSpace:"nowrap" }}>{t.location.length>22?t.location.slice(0,22)+"…":t.location}</td>
                   <td style={{ padding:"16px 20px" }}><PriBadge p={t.priority} /></td>
                   <td style={{ padding:"16px 20px" }}><StaBadge s={t.status} /></td>
                   <td style={{ padding:"16px 20px", fontSize:12, color:t.technician==="Unassigned"?C.textMuted:C.slate, fontWeight:t.technician==="Unassigned"?400:600 }}>{t.technician}</td>

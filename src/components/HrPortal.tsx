@@ -42,6 +42,7 @@ export interface HrTicket {
   assignedRep: string;
   office: string;
   thread: ThreadEntry[];
+  attachments?: { name: string; size: string; type: string; url?: string }[];
 }
 
 interface HrPortalProps {
@@ -72,9 +73,27 @@ export default function HrPortal({
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [staffName, setStaffName] = useState("");
   const [staffId, setStaffId] = useState("");
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<{ name: string; size: string; type: string; url?: string }[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState(false);
+
+  const handleHrFiles = (fileList: FileList) => {
+    const newFiles = Array.from(fileList).map(file => {
+      let url = "";
+      try {
+        url = URL.createObjectURL(file);
+      } catch (e) {
+        // Fallback
+      }
+      return {
+        name: file.name,
+        size: (file.size / (1024 * 1024)).toFixed(2) + " MB",
+        type: file.type,
+        url: url
+      };
+    });
+    setUploadedFiles(prev => [...prev, ...newFiles]);
+  };
 
   // Active HR ticket detail
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
@@ -131,6 +150,7 @@ export default function HrPortal({
       status: "Submitted",
       assignedRep: "Unassigned",
       office,
+      attachments: uploadedFiles,
       thread: [
         {
           type: "status",
@@ -153,6 +173,7 @@ export default function HrPortal({
       setIsAnonymous(false);
       setStaffName("");
       setStaffId("");
+      setUploadedFiles([]);
     }, 800);
   };
 
@@ -490,20 +511,35 @@ export default function HrPortal({
                     </div>
                   )}
 
-                  {/* Drag and Drop File Simulation */}
+                  {/* Drag and Drop File Selection */}
                   <div>
                     <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider opacity-80">Upload Evidence / Attachments</label>
+                    <input
+                      type="file"
+                      multiple
+                      id="hr-file-upload-input"
+                      style={{ display: "none" }}
+                      onChange={e => {
+                        if (e.target.files) {
+                          handleHrFiles(e.target.files);
+                        }
+                      }}
+                    />
                     <div 
-                      onClick={() => {
-                        const files = [...uploadedFiles, `evidence_${uploadedFiles.length + 1}.pdf`];
-                        setUploadedFiles(files);
+                      onClick={() => document.getElementById("hr-file-upload-input")?.click()}
+                      onDragOver={e => { e.preventDefault(); }}
+                      onDrop={e => {
+                        e.preventDefault();
+                        if (e.dataTransfer.files) {
+                          handleHrFiles(e.dataTransfer.files);
+                        }
                       }}
                       className="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer hover:border-[#8B5CF6] transition-all bg-opacity-30"
                       style={{ borderColor: C.border, background: isDark ? "#0F172A" : "#F8FAFC" }}
                     >
                       <Paperclip size={20} className="mx-auto mb-1 text-gray-400" />
                       <span className="text-xs font-semibold block">Click to upload documents (PDF, JPG, DOCX)</span>
-                      <span className="text-[10px] text-gray-500">Attach chats, emails, policy screenshots (Simulated)</span>
+                      <span className="text-[10px] text-gray-500">Attach chats, emails, policy screenshots</span>
                     </div>
 
                     {uploadedFiles.length > 0 && (
@@ -511,7 +547,8 @@ export default function HrPortal({
                         {uploadedFiles.map((file, idx) => (
                           <div key={idx} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-200">
                             <FileText size={12} />
-                            <span>{file}</span>
+                            <span>{file.name}</span>
+                            <span className="text-[10px] opacity-60">({file.size})</span>
                             <button type="button" onClick={(e) => { e.stopPropagation(); setUploadedFiles(uploadedFiles.filter((_, i) => i !== idx)); }} className="text-red-500 hover:text-red-700 ml-1">×</button>
                           </div>
                         ))}
@@ -558,7 +595,7 @@ export default function HrPortal({
                         <span className="font-mono text-xs font-bold text-[#8B5CF6]">{t.id}</span>
                         <span className="text-[10px] opacity-60 font-semibold">{t.date}</span>
                       </div>
-                      <h4 className="font-bold text-sm mb-2 line-clamp-1">{t.subject}</h4>
+                      <h4 title={t.subject} className="font-bold text-sm mb-2 line-clamp-1">{t.subject}</h4>
                       <div className="flex items-center justify-between">
                         <span className="text-xs px-2.5 py-0.5 rounded-full font-bold" 
                           style={{ 
@@ -606,6 +643,31 @@ export default function HrPortal({
                     <div style={{ background: isDark ? "#0F172A" : "#F8FAFC", border: `1.5px solid ${C.border}` }} className="p-4 rounded-xl text-sm leading-relaxed mb-6">
                       <div className="text-xs font-bold mb-1 opacity-60 uppercase tracking-wider">Original Grievance Log:</div>
                       <p>{selectedTicket.description}</p>
+                      
+                      {selectedTicket.attachments && selectedTicket.attachments.length > 0 && (
+                        <div className="mt-4 pt-3 border-t border-dashed" style={{ borderColor: C.border }}>
+                          <div className="text-xs font-bold mb-2 opacity-65 uppercase tracking-wider">Uploaded Evidence / Attachments:</div>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedTicket.attachments.map((file, idx) => (
+                              <a
+                                key={idx}
+                                href={file.url || "#"}
+                                download={file.name}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border hover:opacity-80 transition-all cursor-pointer bg-purple-50 text-purple-700 border-purple-200"
+                              >
+                                <span>📄</span>
+                                <div className="flex flex-col text-left min-w-0">
+                                  <span className="font-bold truncate max-w-[150px]">{file.name}</span>
+                                  <span className="text-[10px] opacity-75">{file.size}</span>
+                                </div>
+                                <span className="text-purple-500">⬇️</span>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Timeline & Thread messages */}
@@ -772,7 +834,7 @@ export default function HrPortal({
                       <span className="font-mono text-xs font-bold text-[#8B5CF6]">{t.id}</span>
                       <span className="text-[10px] opacity-60 font-semibold">{t.date}</span>
                     </div>
-                    <h4 className="font-bold text-sm mb-1.5 line-clamp-1">{t.subject}</h4>
+                    <h4 title={t.subject} className="font-bold text-sm mb-1.5 line-clamp-1">{t.subject}</h4>
                     <div className="text-xs opacity-70 mb-2.5">
                       Reporter: <strong className={t.isAnonymous ? "text-[#8B5CF6]" : ""}>{t.staffName}</strong> ({t.staffId})
                     </div>
@@ -832,6 +894,31 @@ export default function HrPortal({
                   <div style={{ background: isDark ? "#0F172A" : "#F8FAFC", border: `1.5px solid ${C.border}` }} className="p-4 rounded-xl text-sm leading-relaxed mb-6">
                     <div className="text-xs font-bold mb-1 opacity-60 uppercase tracking-wider">Complaint Log Details:</div>
                     <p>{selectedTicket.description}</p>
+                    
+                    {selectedTicket.attachments && selectedTicket.attachments.length > 0 && (
+                      <div className="mt-4 pt-3 border-t border-dashed" style={{ borderColor: C.border }}>
+                        <div className="text-xs font-bold mb-2 opacity-65 uppercase tracking-wider">Uploaded Evidence / Attachments:</div>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedTicket.attachments.map((file, idx) => (
+                            <a
+                              key={idx}
+                              href={file.url || "#"}
+                              download={file.name}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border hover:opacity-80 transition-all cursor-pointer bg-purple-50 text-purple-700 border-purple-200"
+                            >
+                              <span>📄</span>
+                              <div className="flex flex-col text-left min-w-0">
+                                <span className="font-bold truncate max-w-[150px]">{file.name}</span>
+                                <span className="text-[10px] opacity-75">{file.size}</span>
+                              </div>
+                              <span className="text-purple-500">⬇️</span>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Assign Representative Section */}

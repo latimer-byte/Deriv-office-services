@@ -42,6 +42,7 @@ export interface ComplianceReport {
   hasEvidence: boolean;
   timeline: TimelineEntry[];
   messages: MessageEntry[];
+  attachments?: { name: string; size: string; type: string; url?: string }[];
 }
 
 interface CompliancePortalProps {
@@ -69,10 +70,28 @@ export default function CompliancePortal({
   const [department, setDepartment] = useState("");
   const [incidentDate, setIncidentDate] = useState("");
   const [description, setDescription] = useState("");
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<{ name: string; size: string; type: string; url?: string }[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+
+  const handleComplianceFiles = (fileList: FileList) => {
+    const newFiles = Array.from(fileList).map(file => {
+      let url = "";
+      try {
+        url = URL.createObjectURL(file);
+      } catch (e) {
+        // Fallback
+      }
+      return {
+        name: file.name,
+        size: (file.size / (1024 * 1024)).toFixed(2) + " MB",
+        type: file.type,
+        url: url
+      };
+    });
+    setUploadedFiles(prev => [...prev, ...newFiles]);
+  };
 
   // Tracking State
   const [trackingKey, setTrackingKey] = useState("");
@@ -134,6 +153,7 @@ export default function CompliancePortal({
       dateSubmitted: new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }),
       status: "Pending Review",
       hasEvidence: uploadedFiles.length > 0,
+      attachments: uploadedFiles,
       timeline: [
         {
           date: new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }),
@@ -487,12 +507,28 @@ export default function CompliancePortal({
                     />
                   </div>
 
-                  {/* Drag and drop file upload */}
+                  {/* Active Drag and Drop File Upload */}
                   <div>
                     <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider opacity-80">Attach Evidence / Documents <span className="text-gray-400 font-normal">(Optional)</span></label>
+                    <input
+                      type="file"
+                      multiple
+                      id="compliance-file-upload-input"
+                      style={{ display: "none" }}
+                      onChange={e => {
+                        if (e.target.files) {
+                          handleComplianceFiles(e.target.files);
+                        }
+                      }}
+                    />
                     <div
-                      onClick={() => {
-                        setUploadedFiles([...uploadedFiles, `secure_attachment_${uploadedFiles.length + 1}.pdf`]);
+                      onClick={() => document.getElementById("compliance-file-upload-input")?.click()}
+                      onDragOver={e => { e.preventDefault(); }}
+                      onDrop={e => {
+                        e.preventDefault();
+                        if (e.dataTransfer.files) {
+                          handleComplianceFiles(e.dataTransfer.files);
+                        }
                       }}
                       className="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer hover:border-red-600 transition bg-opacity-35"
                       style={{ borderColor: C.border, background: isDark ? "#0F172A" : "#F8FAFC" }}
@@ -505,9 +541,10 @@ export default function CompliancePortal({
                     {uploadedFiles.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-2">
                         {uploadedFiles.map((f, idx) => (
-                          <div key={idx} className="flex items-center gap-1 px-2 py-1 rounded bg-red-50 text-red-700 text-xs font-semibold border border-red-200">
+                          <div key={idx} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-red-50 text-red-700 text-xs font-semibold border border-red-200">
                             <FileText size={12} />
-                            <span>{f}</span>
+                            <span>{f.name}</span>
+                            <span className="text-[10px] opacity-60">({f.size})</span>
                             <button type="button" onClick={(e) => { e.stopPropagation(); setUploadedFiles(uploadedFiles.filter((_, i) => i !== idx)); }} className="text-red-500 hover:text-red-800 ml-1">×</button>
                           </div>
                         ))}
@@ -615,6 +652,29 @@ export default function CompliancePortal({
                       <div style={{ background: isDark ? "#0F172A" : "#F8FAFC", borderColor: C.border }} className="border p-3.5 rounded-xl text-xs mb-4">
                         <strong className="block mb-1 text-gray-500 uppercase tracking-wider">Your Anonymous Statement:</strong>
                         <p className="opacity-80 line-clamp-3">{trackedReport.description}</p>
+                        
+                        {trackedReport.attachments && trackedReport.attachments.length > 0 && (
+                          <div className="mt-3 pt-2.5 border-t border-dashed" style={{ borderColor: C.border }}>
+                            <strong className="block mb-1.5 text-gray-500 uppercase tracking-wider">Submitted Attachments:</strong>
+                            <div className="flex flex-wrap gap-2">
+                              {trackedReport.attachments.map((file, idx) => (
+                                <a
+                                  key={idx}
+                                  href={file.url || "#"}
+                                  download={file.name}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border hover:opacity-85 transition bg-red-50 text-red-700 border-red-100"
+                                >
+                                  <span>📄</span>
+                                  <span className="truncate max-w-[140px]">{file.name}</span>
+                                  <span className="opacity-70 font-normal">({file.size})</span>
+                                  <span className="text-red-500 ml-1">⬇️</span>
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Chat Messages */}
@@ -765,7 +825,7 @@ export default function CompliancePortal({
                           <span className="font-mono text-xs font-bold text-red-600">{r.id}</span>
                           <span className="text-[10px] opacity-60 font-semibold">{r.dateSubmitted}</span>
                         </div>
-                        <h4 className="font-bold text-sm mb-1 line-clamp-1">{r.category}</h4>
+                        <h4 title={r.category} className="font-bold text-sm mb-1 line-clamp-1">{r.category}</h4>
                         <p className="text-xs opacity-75 mb-2.5">Dept: {r.department}</p>
                         
                         <div className="flex justify-between items-center">
@@ -821,6 +881,31 @@ export default function CompliancePortal({
                       <div style={{ background: isDark ? "#0F172A" : "#F8FAFC", border: `1.5px solid ${C.border}` }} className="p-4 rounded-xl text-sm leading-relaxed mb-6">
                         <div className="text-xs font-bold mb-1 opacity-60 uppercase tracking-wider">Secure Disclosure Allegation Log:</div>
                         <p>{selectedReport.description}</p>
+                        
+                        {selectedReport.attachments && selectedReport.attachments.length > 0 && (
+                          <div className="mt-4 pt-3 border-t border-dashed" style={{ borderColor: C.border }}>
+                            <div className="text-xs font-bold mb-2 opacity-65 uppercase tracking-wider">Submitted Attachments & Secure Evidence:</div>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedReport.attachments.map((file, idx) => (
+                                <a
+                                  key={idx}
+                                  href={file.url || "#"}
+                                  download={file.name}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border hover:opacity-80 transition bg-red-50 text-red-700 border-red-200"
+                                >
+                                  <span>📄</span>
+                                  <div className="flex flex-col text-left min-w-0">
+                                    <span className="font-bold truncate max-w-[150px]">{file.name}</span>
+                                    <span className="text-[10px] opacity-75">{file.size}</span>
+                                  </div>
+                                  <span className="text-red-500">⬇️</span>
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Logs & updates */}
