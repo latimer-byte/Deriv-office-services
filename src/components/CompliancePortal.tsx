@@ -321,7 +321,7 @@ export default function CompliancePortal({
 
       {/* 1. MAIN SELECTION SCREEN */}
       {role === "select" && (
-        <div className="min-h-[45vh] flex flex-column items-center justify-center py-4">
+        <div className="min-h-[45vh] flex flex-col items-center justify-center py-4">
           <div className="text-center max-w-xl mb-10">
             <p className="text-sm sm:text-base opacity-80 mb-2">
               Our compliance policy guarantees safe, uncompromised, and 100% anonymous channels to report corruption, safety threats, financial misconduct, or discrimination.
@@ -402,7 +402,7 @@ export default function CompliancePortal({
                     Your report is encrypted and queued. To protect your anonymity, we do NOT have your email, password, or ID. You MUST write down or copy the key below to access replies or check investigation progress.
                   </p>
 
-                  <div className="bg-red-50 dark:bg-gray-800 border rounded-xl p-4 max-w-md mx-auto mb-6 flex flex-column gap-3">
+                  <div className="bg-red-50 dark:bg-gray-800 border rounded-xl p-4 max-w-md mx-auto mb-6 flex flex-col gap-3">
                     <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Your Confidential Access Key:</div>
                     <div className="font-mono text-xl sm:text-2xl font-extrabold tracking-widest text-red-600">{generatedKey}</div>
                     <button

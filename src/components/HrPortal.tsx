@@ -285,7 +285,7 @@ export default function HrPortal({
 
       {/* 1. ROLE SELECTION SCREEN */}
       {role === "select" && (
-        <div className="min-h-[45vh] flex flex-column items-center justify-center py-6">
+        <div className="min-h-[45vh] flex flex-col items-center justify-center py-6">
           <div className="text-center max-w-xl mb-10">
             <p className="text-sm sm:text-base opacity-80 mb-2">
               Welcome to the secure Human Resources Portal. This system provides staff with a direct, confidential path to raise complaints, report grievances, or query leave and payroll.
@@ -447,7 +447,7 @@ export default function HrPortal({
                         <option value="Sensitive - HR Managers Only">🛡️ Sensitive (Only escalated HR Directors)</option>
                       </select>
                     </div>
-                    <div className="flex flex-column justify-center pt-2">
+                    <div className="flex flex-col justify-center pt-2">
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
