@@ -145,7 +145,7 @@ export default function HrPortal({
       confidentiality,
       isAnonymous,
       staffName: isAnonymous ? "Anonymous Consultation" : (staffName || "Staff Member"),
-      staffId: isAnonymous ? "ANON-HR" : (staffId || "DRV-9999"),
+      staffId: isAnonymous ? "ANON-HR" : (staffId || "EMP-9999"),
       date: new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }),
       status: "Submitted",
       assignedRep: "Unassigned",
@@ -503,7 +503,7 @@ export default function HrPortal({
                           type="text" 
                           value={staffId}
                           onChange={e => setStaffId(e.target.value)}
-                          placeholder="e.g. DRV-04512"
+                          placeholder="e.g. EMP-04512"
                           style={{ background: isDark ? "#1E293B" : "#FFFFFF", color: C.text, borderColor: C.border }}
                           className="w-full border rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#8B5CF6]"
                         />

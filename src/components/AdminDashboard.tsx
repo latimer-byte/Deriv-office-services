@@ -16,7 +16,7 @@ import {
 } from "recharts";
 import { Ticket } from "../App";
 
-// ─── Deriv Brand Tokens ───────────────────────────────────────────────────────
+// ─── Brand Tokens ─────────────────────────────────────────────────────────────
 const C_LIGHT = {
   coral:       "#FF444F",
   coralDark:   "#D93540",
