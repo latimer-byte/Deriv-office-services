@@ -120,7 +120,7 @@ const STATUS_FLOW = ["Submitted", "Assigned", "In Progress", "Resolved", "Closed
 const TECHNICIANS: Record<string, string[]> = {
   "IT Admin":             ["James Okonkwo", "Sarah Tan", "Priya Nair", "Unassigned"],
   "Facilities Management":["Peter Müller",  "Aisha Kamara", "Tom Reyes", "Unassigned"],
-  "Admin Office":         ["Clara Santos",  "David Lim",   "Yuki Tanaka","Unassigned"],
+  "Office Admin":         ["Clara Santos",  "David Lim",   "Yuki Tanaka","Unassigned"],
 };
 
 // ─── Deriv Physical Offices ───────────────────────────────────────────────────
@@ -209,7 +209,7 @@ const BASE_TICKETS: Record<string, Ticket[]> = {
     },
     {
       id: "REQ-2024-005", title: "Request for additional monitor — dual screen setup",
-      category: "Office Supplies", dept: "Admin Office", priority: "Low",
+      category: "Office Supplies", dept: "Office Admin", priority: "Low",
       status: "Assigned", location: "Floor 3 — Open Plan", desk: "Desk 3-07",
       date: "9 Jul 2024", staffName: "Nurul Aina", staffId: "DRV-03701",
       assetTag: "", assetModel: "",
@@ -252,7 +252,7 @@ const BASE_TICKETS: Record<string, Ticket[]> = {
     },
     {
       id: "REQ-2024-008", title: "Stationery restock — Floor 4 supply room",
-      category: "Office Supplies", dept: "Admin Office", priority: "Low",
+      category: "Office Supplies", dept: "Office Admin", priority: "Low",
       status: "Resolved", location: "Floor 4 — Supply Room", desk: "",
       date: "6 Jul 2024", staffName: "Siti Mariam", staffId: "DRV-03215",
       assetTag: "", assetModel: "",
@@ -268,7 +268,7 @@ const BASE_TICKETS: Record<string, Ticket[]> = {
   "Labuan, Malaysia": [
     { id: "REQ-2024-010", title: "VPN access failing after Windows update", category: "Network / VPN", dept: "IT Admin", priority: "High", status: "In Progress", location: "Level 1 — Open Plan", desk: "Desk 1-05", date: "9 Jul 2024", staffName: "Yong Kiat", staffId: "DRV-02201", assetTag: "DRV-IT-00510", assetModel: "Lenovo ThinkPad X1 Carbon", description: "VPN stopped working after Windows forced an update last night. Can't access internal systems.", technician: "Sarah Tan", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Sarah Tan", time:"9 Jul, 08:30", note:"Investigating update conflict with Cisco AnyConnect." }, { type:"comment", by:"Sarah Tan", time:"9 Jul, 10:00", note:"Rollback patch being tested in staging. Will deploy if successful.", internal:true }] },
     { id: "REQ-2024-011", title: "Water dispenser leaking near reception", category: "Plumbing / Water", dept: "Facilities Management", priority: "High", status: "Open", location: "Ground Floor — Reception", desk: "", date: "10 Jul 2024", staffName: "Linda Chin", staffId: "DRV-02890", assetTag: "", assetModel: "", description: "The water dispenser by reception is dripping constantly. The floor is getting slippery.", technician: "Unassigned", thread: [{ type:"status", from:"Submitted", to:"Submitted", by:"System", time:"10 Jul, 09:00", note:"Awaiting assignment." }] },
-    { id: "REQ-2024-012", title: "Stationery restock — Level 1 supply cabinet", category: "Office Supplies", dept: "Admin Office", priority: "Low", status: "Resolved", location: "Level 1 — Supply Cabinet", desk: "", date: "6 Jul 2024", staffName: "Omar Haji", staffId: "DRV-01755", assetTag: "", assetModel: "", description: "Pens and A4 paper completely depleted.", technician: "David Lim", thread: [{ type:"status", from:"Submitted", to:"Resolved", by:"David Lim", time:"7 Jul, 10:00", note:"Stationery delivered and stocked." }] },
+    { id: "REQ-2024-012", title: "Stationery restock — Level 1 supply cabinet", category: "Office Supplies", dept: "Office Admin", priority: "Low", status: "Resolved", location: "Level 1 — Supply Cabinet", desk: "", date: "6 Jul 2024", staffName: "Omar Haji", staffId: "DRV-01755", assetTag: "", assetModel: "", description: "Pens and A4 paper completely depleted.", technician: "David Lim", thread: [{ type:"status", from:"Submitted", to:"Resolved", by:"David Lim", time:"7 Jul, 10:00", note:"Stationery delivered and stocked." }] },
   ],
   "Ipoh, Malaysia": [
     { id: "REQ-2024-020", title: "Projector bulb replacement needed in training room", category: "AV Equipment", dept: "IT Admin", priority: "Medium", status: "In Progress", location: "Floor 1 — Training Room", desk: "", date: "8 Jul 2024", staffName: "Kavitha Suresh", staffId: "DRV-03102", assetTag: "DRV-IT-00222", assetModel: "Epson EB-S41", description: "Projector shows 'Lamp hours exceeded' warning. Image is very dim.", technician: "James Okonkwo", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"James Okonkwo", time:"8 Jul, 09:00", note:"" }, { type:"comment", by:"James Okonkwo", time:"8 Jul, 10:00", note:"Bulb ordered from supplier. Arriving tomorrow.", internal:false }] },
@@ -281,7 +281,7 @@ const BASE_TICKETS: Record<string, Ticket[]> = {
   "Limassol, Cyprus": [
     { id: "REQ-2024-040", title: "Server room temperature alert", category: "Infrastructure", dept: "IT Admin", priority: "Critical", status: "Assigned", location: "Ground Floor — Data Centre", desk: "", date: "10 Jul 2024", staffName: "Nikos Papadopoulos", staffId: "DRV-05012", assetTag: "DRV-IT-00701", assetModel: "APC Cooling Unit CR020", description: "Temperature monitoring dashboard showing 34°C in the server room. Threshold is 28°C.", technician: "Priya Nair", thread: [{ type:"status", from:"Submitted", to:"Assigned", by:"Priya Nair", time:"10 Jul, 06:55", note:"Critical escalation. On-site within 30 mins." }, { type:"comment", by:"Priya Nair", time:"10 Jul, 07:30", note:"Cooling unit fan seized. Emergency bypass enabled. Monitoring.", internal:true }] },
     { id: "REQ-2024-041", title: "Slippery floor near fire exit", category: "Safety / Hazard", dept: "Facilities Management", priority: "Critical", status: "In Progress", location: "Floor 1 — Fire Exit Corridor", desk: "", date: "10 Jul 2024", staffName: "Elena Georgiou", staffId: "DRV-04788", assetTag: "", assetModel: "", description: "The floor by the fire exit is very slippery after the cleaner used the wrong product. Someone nearly fell.", technician: "Peter Müller", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Peter Müller", time:"10 Jul, 08:00", note:"Warning signs placed immediately. Deep clean with correct product underway." }] },
-    { id: "REQ-2024-042", title: "Meeting room AV setup for all-hands call", category: "Meeting Rooms", dept: "Admin Office", priority: "High", status: "Resolved", location: "Floor 3 — Conference Suite", desk: "", date: "8 Jul 2024", staffName: "Stavros Andreou", staffId: "DRV-03345", assetTag: "", assetModel: "", description: "Need the conference suite fully set up for an all-hands video call — camera, mics, screen sharing tested.", technician: "Yuki Tanaka", thread: [{ type:"status", from:"Submitted", to:"Resolved", by:"Yuki Tanaka", time:"8 Jul, 17:00", note:"AV fully configured and tested. Call ran without issues." }] },
+    { id: "REQ-2024-042", title: "Meeting room AV setup for all-hands call", category: "Meeting Rooms", dept: "Office Admin", priority: "High", status: "Resolved", location: "Floor 3 — Conference Suite", desk: "", date: "8 Jul 2024", staffName: "Stavros Andreou", staffId: "DRV-03345", assetTag: "", assetModel: "", description: "Need the conference suite fully set up for an all-hands video call — camera, mics, screen sharing tested.", technician: "Yuki Tanaka", thread: [{ type:"status", from:"Submitted", to:"Resolved", by:"Yuki Tanaka", time:"8 Jul, 17:00", note:"AV fully configured and tested. Call ran without issues." }] },
     { id: "REQ-2024-043", title: "MFA reset required for returning employee", category: "Access / Security", dept: "IT Admin", priority: "Medium", status: "Resolved", location: "Floor 1 — HR Area", desk: "", date: "7 Jul 2024", staffName: "Maria Constantinou", staffId: "DRV-01830", assetTag: "", assetModel: "", description: "Employee returning from parental leave — MFA authenticator app no longer linked to their account.", technician: "James Okonkwo", thread: [{ type:"status", from:"Submitted", to:"Resolved", by:"James Okonkwo", time:"7 Jul, 15:00", note:"MFA reset completed. User confirmed access restored." }] },
   ],
   "Nicosia, Cyprus": [
@@ -291,17 +291,17 @@ const BASE_TICKETS: Record<string, Ticket[]> = {
   ],
   "Birkirkara, Malta": [
     { id: "REQ-2024-060", title: "Outlook calendar sync broken for 3 users", category: "Software / M365", dept: "IT Admin", priority: "High", status: "Assigned", location: "Level 3 — Finance Team", desk: "", date: "10 Jul 2024", staffName: "Marco Borg", staffId: "DRV-04601", assetTag: "", assetModel: "", description: "Three members of the finance team can't see shared calendars or meeting invites in Outlook since this morning.", technician: "James Okonkwo", thread: [{ type:"status", from:"Submitted", to:"Assigned", by:"James Okonkwo", time:"10 Jul, 09:30", note:"Investigating M365 tenant sync issue." }] },
-    { id: "REQ-2024-061", title: "Coffee machine broken — Level 3 kitchen", category: "Kitchen Appliances", dept: "Admin Office", priority: "High", status: "In Progress", location: "Level 3 — Kitchen", desk: "", date: "8 Jul 2024", staffName: "Claire Farrugia", staffId: "DRV-03890", assetTag: "DRV-ADM-00045", assetModel: "De'Longhi ECAM 450.55", description: "Coffee machine making grinding noise then shutting off. No coffee dispensed.", technician: "Clara Santos", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Clara Santos", time:"8 Jul, 10:00", note:"" }, { type:"comment", by:"Clara Santos", time:"8 Jul, 11:00", note:"Engineer contacted. Grinder unit needs replacement. Parts on order — ETA 2 days.", internal:false }] },
-    { id: "REQ-2024-062", title: "Ergonomic chair replacement on medical advice", category: "Furniture / Fixtures", dept: "Admin Office", priority: "Medium", status: "Submitted", location: "Level 3 — Open Plan", desk: "Desk 3-19", date: "10 Jul 2024", staffName: "Joseph Mifsud", staffId: "DRV-04102", assetTag: "", assetModel: "", description: "My GP has recommended a lumbar-support chair due to lower back issues. HR have approved. Need Facilities to source one.", technician: "Unassigned", thread: [{ type:"status", from:"Submitted", to:"Submitted", by:"System", time:"10 Jul, 08:00", note:"Awaiting assignment." }] },
+    { id: "REQ-2024-061", title: "Coffee machine broken — Level 3 kitchen", category: "Kitchen Appliances", dept: "Office Admin", priority: "High", status: "In Progress", location: "Level 3 — Kitchen", desk: "", date: "8 Jul 2024", staffName: "Claire Farrugia", staffId: "DRV-03890", assetTag: "DRV-ADM-00045", assetModel: "De'Longhi ECAM 450.55", description: "Coffee machine making grinding noise then shutting off. No coffee dispensed.", technician: "Clara Santos", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Clara Santos", time:"8 Jul, 10:00", note:"" }, { type:"comment", by:"Clara Santos", time:"8 Jul, 11:00", note:"Engineer contacted. Grinder unit needs replacement. Parts on order — ETA 2 days.", internal:false }] },
+    { id: "REQ-2024-062", title: "Ergonomic chair replacement on medical advice", category: "Furniture / Fixtures", dept: "Office Admin", priority: "Medium", status: "Submitted", location: "Level 3 — Open Plan", desk: "Desk 3-19", date: "10 Jul 2024", staffName: "Joseph Mifsud", staffId: "DRV-04102", assetTag: "", assetModel: "", description: "My GP has recommended a lumbar-support chair due to lower back issues. HR have approved. Need Facilities to source one.", technician: "Unassigned", thread: [{ type:"status", from:"Submitted", to:"Submitted", by:"System", time:"10 Jul, 08:00", note:"Awaiting assignment." }] },
   ],
   "London, UK": [
     { id: "REQ-2024-070", title: "New Slack workspace access for contractors", category: "Software Access", dept: "IT Admin", priority: "Medium", status: "Assigned", location: "Floor 1 — Workspace", desk: "", date: "8 Jul 2024", staffName: "Sophie Clarke", staffId: "DRV-06011", assetTag: "", assetModel: "", description: "Four external contractors starting Monday need guest access to our Slack workspace (specific channels only).", technician: "Sarah Tan", thread: [{ type:"status", from:"Submitted", to:"Assigned", by:"Sarah Tan", time:"8 Jul, 14:00", note:"Setting up guest invites — will send by EOD." }] },
-    { id: "REQ-2024-071", title: "Broken coffee grinder in kitchen", category: "Kitchen Appliances", dept: "Admin Office", priority: "Low", status: "Submitted", location: "Floor 1 — Kitchen", desk: "", date: "10 Jul 2024", staffName: "Tom Harrington", staffId: "DRV-05877", assetTag: "DRV-ADM-00088", assetModel: "Sage BCG820BSS", description: "The coffee grinder blade has snapped. Machine won't run at all.", technician: "Unassigned", thread: [{ type:"status", from:"Submitted", to:"Submitted", by:"System", time:"10 Jul, 09:00", note:"Awaiting assignment." }] },
+    { id: "REQ-2024-071", title: "Broken coffee grinder in kitchen", category: "Kitchen Appliances", dept: "Office Admin", priority: "Low", status: "Submitted", location: "Floor 1 — Kitchen", desk: "", date: "10 Jul 2024", staffName: "Tom Harrington", staffId: "DRV-05877", assetTag: "DRV-ADM-00088", assetModel: "Sage BCG820BSS", description: "The coffee grinder blade has snapped. Machine won't run at all.", technician: "Unassigned", thread: [{ type:"status", from:"Submitted", to:"Submitted", by:"System", time:"10 Jul, 09:00", note:"Awaiting assignment." }] },
     { id: "REQ-2024-072", title: "Fire safety equipment annual inspection due", category: "Safety / Compliance", dept: "Facilities Management", priority: "High", status: "Assigned", location: "All Floors", desk: "", date: "7 Jul 2024", staffName: "Fiona Walsh", staffId: "DRV-05501", assetTag: "", assetModel: "", description: "Annual fire extinguisher and alarm panel inspection is overdue by 2 weeks. Compliance deadline this Friday.", technician: "Aisha Kamara", thread: [{ type:"status", from:"Submitted", to:"Assigned", by:"Aisha Kamara", time:"7 Jul, 13:00", note:"Inspection company booked for Thursday. All floors to be covered." }] },
   ],
   "Reading, UK": [
     { id: "REQ-2024-080", title: "Docking station not charging laptop", category: "Hardware", dept: "IT Admin", priority: "Medium", status: "Resolved", location: "Ground Floor — Open Plan", desk: "Desk G-14", date: "6 Jul 2024", staffName: "Amelia Cox", staffId: "DRV-05741", assetTag: "DRV-IT-00641", assetModel: "Dell WD22TB4 Thunderbolt Dock", description: "Docking station stopped charging my laptop. Also the USB-C video output isn't working.", technician: "James Okonkwo", thread: [{ type:"status", from:"Submitted", to:"Resolved", by:"James Okonkwo", time:"6 Jul, 16:00", note:"Faulty dock replaced from stock. All ports confirmed working." }] },
-    { id: "REQ-2024-081", title: "Cleaning quality complaint — washrooms", category: "Cleaning", dept: "Admin Office", priority: "Medium", status: "In Progress", location: "Ground Floor — Washrooms", desk: "", date: "9 Jul 2024", staffName: "Daniel Hughes", staffId: "DRV-05812", assetTag: "", assetModel: "", description: "Washrooms have not been cleaned to standard for 3 consecutive days. Soap dispensers empty, bins overflowing.", technician: "Clara Santos", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Clara Santos", time:"9 Jul, 09:30", note:"Cleaning contractor notified. Additional deep clean scheduled for today." }] },
+    { id: "REQ-2024-081", title: "Cleaning quality complaint — washrooms", category: "Cleaning", dept: "Office Admin", priority: "Medium", status: "In Progress", location: "Ground Floor — Washrooms", desk: "", date: "9 Jul 2024", staffName: "Daniel Hughes", staffId: "DRV-05812", assetTag: "", assetModel: "", description: "Washrooms have not been cleaned to standard for 3 consecutive days. Soap dispensers empty, bins overflowing.", technician: "Clara Santos", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Clara Santos", time:"9 Jul, 09:30", note:"Cleaning contractor notified. Additional deep clean scheduled for today." }] },
   ],
   "Paris, France": [
     { id: "REQ-2024-090", title: "Access badge not reading on main door", category: "Access / Security", dept: "Facilities Management", priority: "High", status: "In Progress", location: "Ground Floor — Main Entrance", desk: "", date: "9 Jul 2024", staffName: "Lucie Moreau", staffId: "DRV-07001", assetTag: "", assetModel: "", description: "My badge stopped working on the main entrance reader. Works on internal doors. Started after badge was demagnetised near phone.", technician: "Aisha Kamara", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Aisha Kamara", time:"9 Jul, 08:30", note:"" }, { type:"comment", by:"Aisha Kamara", time:"9 Jul, 09:00", note:"Badge reprogrammed at security desk. Testing on door readers now.", internal:false }] },
@@ -318,7 +318,7 @@ const BASE_TICKETS: Record<string, Ticket[]> = {
   "Singapore": [
     { id: "REQ-2024-120", title: "Monitor flickering on trading workstation", category: "Monitor / Display", dept: "IT Admin", priority: "High", status: "In Progress", location: "Floor 3 — Trading Floor", desk: "Desk 3-06", date: "9 Jul 2024", staffName: "Wei Jing Tan", staffId: "DRV-10201", assetTag: "DRV-IT-00920", assetModel: "Bloomberg Terminal Monitor", description: "The primary trading monitor is flickering every few seconds. Unacceptable during live market hours.", technician: "Sarah Tan", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Sarah Tan", time:"9 Jul, 07:30", note:"" }, { type:"comment", by:"Sarah Tan", time:"9 Jul, 08:00", note:"Display cable replaced. Monitoring for recurrence before confirming resolved.", internal:false }] },
     { id: "REQ-2024-121", title: "Refrigerator not cooling — Floor 2 pantry", category: "Kitchen Appliances", dept: "Facilities Management", priority: "High", status: "Assigned", location: "Floor 2 — Pantry", desk: "", date: "10 Jul 2024", staffName: "Jasmine Loh", staffId: "DRV-10345", assetTag: "DRV-FAC-00189", assetModel: "Panasonic NR-BX468", description: "Fridge in the Floor 2 pantry not cooling. Staff food is spoiling.", technician: "Aisha Kamara", thread: [{ type:"status", from:"Submitted", to:"Assigned", by:"Aisha Kamara", time:"10 Jul, 09:00", note:"Appliance repair company called. Visit scheduled this afternoon." }] },
-    { id: "REQ-2024-122", title: "Request for visitor desk setup — 2 days", category: "Meeting Rooms", dept: "Admin Office", priority: "Medium", status: "Resolved", location: "Floor 2 — Hot Desk Area", desk: "", date: "7 Jul 2024", staffName: "Jin Hui Koh", staffId: "DRV-10112", assetTag: "", assetModel: "", description: "Two visitors from Limassol arriving Thursday–Friday. Need hot desks with monitor, keyboard, and guest Wi-Fi access.", technician: "Yuki Tanaka", thread: [{ type:"status", from:"Submitted", to:"Resolved", by:"Yuki Tanaka", time:"7 Jul, 16:00", note:"Desks configured with peripherals and guest Wi-Fi credentials prepared." }] },
+    { id: "REQ-2024-122", title: "Request for visitor desk setup — 2 days", category: "Meeting Rooms", dept: "Office Admin", priority: "Medium", status: "Resolved", location: "Floor 2 — Hot Desk Area", desk: "", date: "7 Jul 2024", staffName: "Jin Hui Koh", staffId: "DRV-10112", assetTag: "", assetModel: "", description: "Two visitors from Limassol arriving Thursday–Friday. Need hot desks with monitor, keyboard, and guest Wi-Fi access.", technician: "Yuki Tanaka", thread: [{ type:"status", from:"Submitted", to:"Resolved", by:"Yuki Tanaka", time:"7 Jul, 16:00", note:"Desks configured with peripherals and guest Wi-Fi credentials prepared." }] },
   ],
   "Dubai – JLT, UAE": [
     { id: "REQ-2024-130", title: "Access card not working on main floor", category: "Access / Security", dept: "Facilities Management", priority: "High", status: "In Progress", location: "Floor 6 — Main Door", desk: "", date: "9 Jul 2024", staffName: "Khalid Al-Rashid", staffId: "DRV-11001", assetTag: "", assetModel: "", description: "My access card gives 3 beeps and flashes red on the Floor 6 door reader. All other floors work fine.", technician: "Peter Müller", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Peter Müller", time:"9 Jul, 08:45", note:"Card reprogrammed at security desk. Testing now." }] },
@@ -348,7 +348,7 @@ const BASE_TICKETS: Record<string, Ticket[]> = {
     { id: "REQ-2024-191", title: "New hire onboarding — laptop and access setup", category: "Hardware", dept: "IT Admin", priority: "Medium", status: "In Progress", location: "Floor 1 — HR Area", desk: "", date: "10 Jul 2024", staffName: "Amina Uwimana", staffId: "DRV-15102", assetTag: "DRV-IT-01201", assetModel: "HP EliteBook 840 G9", description: "New team member starting today. Laptop, email, Slack, VPN and M365 all need to be ready.", technician: "Sarah Tan", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Sarah Tan", time:"10 Jul, 08:00", note:"Laptop configured. Access provisioning in progress." }] },
   ],
   "Mauritius": [
-    { id: "REQ-2024-200", title: "Office setup for new Mauritius team", category: "Furniture / Fixtures", dept: "Admin Office", priority: "High", status: "In Progress", location: "Floor 1 — Open Plan", desk: "", date: "10 Jul 2024", staffName: "Priya Gopal", staffId: "DRV-16001", assetTag: "", assetModel: "", description: "New Mauritius office opening this week. Need 8 desks, chairs, and monitors set up before Monday.", technician: "Yuki Tanaka", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Yuki Tanaka", time:"10 Jul, 07:00", note:"Desks and chairs delivered. IT setup underway." }] },
+    { id: "REQ-2024-200", title: "Office setup for new Mauritius team", category: "Furniture / Fixtures", dept: "Office Admin", priority: "High", status: "In Progress", location: "Floor 1 — Open Plan", desk: "", date: "10 Jul 2024", staffName: "Priya Gopal", staffId: "DRV-16001", assetTag: "", assetModel: "", description: "New Mauritius office opening this week. Need 8 desks, chairs, and monitors set up before Monday.", technician: "Yuki Tanaka", thread: [{ type:"status", from:"Submitted", to:"In Progress", by:"Yuki Tanaka", time:"10 Jul, 07:00", note:"Desks and chairs delivered. IT setup underway." }] },
     { id: "REQ-2024-201", title: "Internet connectivity intermittent", category: "Network / ISP", dept: "IT Admin", priority: "Critical", status: "Assigned", location: "Floor 1 — Server Room", desk: "", date: "10 Jul 2024", staffName: "Kevin Ramdhun", staffId: "DRV-16089", assetTag: "", assetModel: "", description: "Internet dropping every 5–10 minutes. Unusable for work. ISP circuit may be faulty.", technician: "James Okonkwo", thread: [{ type:"status", from:"Submitted", to:"Assigned", by:"James Okonkwo", time:"10 Jul, 09:00", note:"ISP notified. Engineer visiting tomorrow morning." }] },
   ],
 };
@@ -380,7 +380,7 @@ function statusCfg(s: string) {
 function PriBadge({ p }: { p: string }) {
   const cfg = priorityCfg(p);
   return (
-    <span style={{ display:"inline-flex", alignItems:"center", gap:5, padding:"4px 11px", borderRadius:20, background:cfg.bg, color:cfg.color, fontSize:12, fontWeight:600 }}>
+    <span style={{ display:"inline-flex", alignItems:"center", gap:5, padding:"4px 11px", borderRadius:20, background:cfg.bg, color:cfg.color, fontSize:12, fontWeight:600, whiteSpace:"nowrap" }}>
       {cfg.icon && <span>{cfg.icon}</span>}{p}
     </span>
   );
@@ -389,7 +389,7 @@ function PriBadge({ p }: { p: string }) {
 function StaBadge({ s }: { s: string }) {
   const cfg = statusCfg(s);
   return (
-    <span style={{ display:"inline-flex", alignItems:"center", gap:6, padding:"4px 12px", borderRadius:20, background:cfg.bg, color:cfg.color, fontSize:12, fontWeight:600 }}>
+    <span style={{ display:"inline-flex", alignItems:"center", gap:6, padding:"4px 12px", borderRadius:20, background:cfg.bg, color:cfg.color, fontSize:12, fontWeight:600, whiteSpace:"nowrap" }}>
       <span style={{ width:7, height:7, borderRadius:"50%", background:cfg.dot, flexShrink:0 }} />{s}
     </span>
   );
@@ -414,9 +414,9 @@ const PORTALS = [
   { id:"staff",      label:"Staff Member",         desc:"Submit and track your repair or maintenance requests",         icon:"👤", iconBg:C.slate },
   { id:"it",         label:"IT Admin",             desc:"Manage technology, software, and hardware requests",           icon:"💻", iconBg:C.purple },
   { id:"facilities", label:"Facilities Management", desc:"Handle physical space, equipment, and infrastructure issues",  icon:"🔧", iconBg:"#0F766E" },
-  { id:"admin",      label:"Admin Office",          desc:"Process administrative requests, supplies, and general tasks", icon:"📋", iconBg:"#475569" },
-  { id:"hr",         label:"HR Portal",             desc:"Raise confidential complaints, request consultations, and track grievances", icon:"💼", iconBg:"#8B5CF6" },
-  { id:"compliance", label:"Compliance Portal",     desc:"Anonymous whistleblower gateway. Report misconduct with zero identity leaks", icon:"🛡️", iconBg:"#DC2626" },
+  { id:"admin",      label:"Office Admin",          desc:"Process administrative requests, supplies, and general tasks", icon:"📋", iconBg:"#475569" },
+  { id:"hr",         label:"HR Team",               desc:"Raise confidential complaints, request consultations, and track grievances", icon:"💼", iconBg:"#8B5CF6" },
+  { id:"compliance", label:"Compliance team",       desc:"Anonymous whistleblower gateway. Report misconduct with zero identity leaks", icon:"🛡️", iconBg:"#DC2626" },
 ];
 
 // ─── Deriv Global Office Locations with Neon Landmarks ────────────────────────
@@ -1034,9 +1034,9 @@ function TopBar({ portal, office, onBack, view, setView, onPortalChange, theme, 
             <option value="staff">👤 Staff Portal</option>
             <option value="it">💻 IT Admin</option>
             <option value="facilities">🔧 Facilities</option>
-            <option value="admin">📋 Admin Office</option>
-            <option value="hr">💼 HR Portal</option>
-            <option value="compliance">🛡️ Compliance Portal</option>
+            <option value="admin">📋 Office Admin</option>
+            <option value="hr">💼 HR Team</option>
+            <option value="compliance">🛡️ Compliance team</option>
           </select>
         </div>
       </div>
@@ -1112,7 +1112,7 @@ const STEPS_PRESETS: Record<string, { label: string; text: string }[]> = {
     { label: "🚧 Safety Cordoned", text: "The affected location has been temporarily cordoned off for occupant safety." },
     { label: "✅ Repairs Completed", text: "Physical repair works are finished. The area/equipment is now safe and functional." }
   ],
-  "Admin Office": [
+  "Office Admin": [
     { label: "🔍 Request Reviewed", text: "Administrative services have reviewed your submission and are processing approvals." },
     { label: "📦 Reorder Supplies", text: "Stationery/supplies replenishment order has been placed with our local vendors." },
     { label: "📋 Escalated to HR", text: "This request has been forwarded to the HR and Operations department for processing." },
@@ -1129,7 +1129,7 @@ function getRecommendation(title: string, desc: string): string | null {
   const itKeywords = ["monitor", "display", "screen", "laptop", "pc", "desktop", "mouse", "keyboard", "printer", "wi-fi", "wifi", "internet", "network", "vpn", "slack", "password", "docking", "port", "phishing", "email", "outlook", "m365", "software", "hardware", "device", "cisco", "headset"];
   // Facilities Management triggers
   const facilitiesKeywords = ["ac", "air conditioning", "hvac", "leak", "water", "plumbing", "chair", "desk", "furniture", "light", "flickering light", "pest", "mouse", "room", "boardroom", "conference", "door", "badge", "lock", "key", "ceiling", "pantry", "fridge", "refrigerator", "sink"];
-  // Admin Office triggers
+  // Office Admin triggers
   const adminKeywords = ["stationery", "supplies", "replenish", "paper", "pen", "notebook", "office setup", "courier", "package", "documents", "onboarding", "hr", "clearing", "cleaning", "washroom", "soap"];
 
   const itCount = itKeywords.filter(k => text.includes(k)).length;
@@ -1140,7 +1140,7 @@ function getRecommendation(title: string, desc: string): string | null {
 
   if (itCount >= facCount && itCount >= admCount) return "IT Admin";
   if (facCount >= itCount && facCount >= admCount) return "Facilities Management";
-  return "Admin Office";
+  return "Office Admin";
 }
 
 // ─── TICKET DETAIL PAGE ───────────────────────────────────────────────────────
@@ -1150,13 +1150,13 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
   const [technicianSel, setTechSel] = useState(ticket.technician);
   const [assignNote, setAssignNote] = useState("");
 
-  const deptsList = ["IT Admin", "Facilities Management", "Admin Office"];
+  const deptsList = ["IT Admin", "Facilities Management", "Office Admin"];
   const initialRedirectDept = deptsList.find(d => d !== ticket.dept) || "IT Admin";
   const [redirectDept, setRedirectDept] = useState(initialRedirectDept);
   const [redirectReason, setRedirectReason] = useState("");
 
   React.useEffect(() => {
-    const defaultDept = ["IT Admin", "Facilities Management", "Admin Office"].find(d => d !== ticket.dept) || "IT Admin";
+    const defaultDept = ["IT Admin", "Facilities Management", "Office Admin"].find(d => d !== ticket.dept) || "IT Admin";
     setRedirectDept(defaultDept);
     setRedirectReason("");
     setTechSel(ticket.technician);
@@ -1357,7 +1357,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
                       </div>
                       {e.type === "status" ? (
                         <div style={{ fontSize:13, color:C.textSub }}>
-                          {e.from && e.to && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.from) && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.to) ? (
+                          {e.from && e.to && ["IT Admin", "Facilities Management", "Office Admin"].includes(e.from) && ["IT Admin", "Facilities Management", "Office Admin"].includes(e.to) ? (
                             <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
                               <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
                                 <span style={{ fontSize:10, background:"#FFF0F1", color:C.coral, padding:"2px 8px", borderRadius:10, fontWeight:700, letterSpacing:0.5 }}>🔄 PORTAL REDIRECT</span>
@@ -1378,7 +1378,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
                           ) : (
                             <span>Activity update</span>
                           )}
-                          {(!e.from || !e.to || !["IT Admin", "Facilities Management", "Admin Office"].includes(e.from) || !["IT Admin", "Facilities Management", "Admin Office"].includes(e.to)) && e.note && (
+                          {(!e.from || !e.to || !["IT Admin", "Facilities Management", "Office Admin"].includes(e.from) || !["IT Admin", "Facilities Management", "Office Admin"].includes(e.to)) && e.note && (
                             <div style={{ marginTop:4, fontSize:13, color:C.textSub, background:C.bg, padding:"8px 12px", borderRadius:8 }}>{e.note}</div>
                           )}
                         </div>
@@ -1579,7 +1579,7 @@ function TicketDetail({ ticket, onBack, onUpdate, isAdmin }: { ticket: Ticket; o
               <label style={{ fontSize:11, color:C.textSub, fontWeight:600, display:"block", marginBottom:4 }}>Select Destination Portal:</label>
               <select value={redirectDept} onChange={e => setRedirectDept(e.target.value)}
                 style={{ width:"100%", padding:"10px 14px", borderRadius:10, border:`1.5px solid ${C.border}`, fontSize:13, background:C.card, color:C.slate, fontFamily:F, outline:"none", marginBottom:12 }}>
-                {["IT Admin", "Facilities Management", "Admin Office"].map(d => (
+                {["IT Admin", "Facilities Management", "Office Admin"].map(d => (
                   <option key={d} disabled={d === ticket.dept} style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>{d} {d === ticket.dept ? "(Current)" : ""}</option>
                 ))}
               </select>
@@ -1890,7 +1890,7 @@ function NewRequest({ office, onSubmit }: { office: string; onSubmit: (newTicket
             <select value={dept} onChange={e => setDept(e.target.value)} style={inp}>
               <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>IT Admin</option>
               <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>Facilities Management</option>
-              <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>Admin Office</option>
+              <option style={{ background: currentTheme === "dark" ? "#1E293B" : "#FFFFFF", color: currentTheme === "dark" ? "#F8FAFC" : "#181C25" }}>Office Admin</option>
             </select>
             {recommendedDept && recommendedDept !== dept && (
               <div style={{ marginTop: 8, padding: "10px 12px", borderRadius: 8, background: "#FFFBEB", border: "1.5px solid #FDE68A", fontSize: 12, lineHeight: 1.45 }}>
@@ -2400,8 +2400,8 @@ export default function App() {
   const tickets = ticketStore[office] || [];
   const activeTicket = openTicket ? (tickets.find(t => t.id === openTicket.id) || openTicket) : null;
 
-  const deptMap: Record<string, string>  = { it:"IT Admin", facilities:"Facilities Management", admin:"Admin Office" };
-  const titleMap: Record<string, string> = { it:"IT ADMIN DASHBOARD", facilities:"FACILITIES MANAGEMENT DASHBOARD", admin:"ADMIN OFFICE DASHBOARD" };
+  const deptMap: Record<string, string>  = { it:"IT Admin", facilities:"Facilities Management", admin:"Office Admin" };
+  const titleMap: Record<string, string> = { it:"IT ADMIN DASHBOARD", facilities:"FACILITIES MANAGEMENT DASHBOARD", admin:"OFFICE ADMIN DASHBOARD" };
 
   function handleUpdate(updated: Ticket) {
     const oldTicket = tickets.find(t => t.id === updated.id);

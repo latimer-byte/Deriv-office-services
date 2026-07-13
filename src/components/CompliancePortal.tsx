@@ -612,7 +612,7 @@ export default function CompliancePortal({
 
                       <div className="border-t pt-3" style={{ borderColor: C.border }}>
                         <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Investigation Progress:</div>
-                        <span className="inline-block text-xs px-2.5 py-0.5 rounded-full font-bold" 
+                        <span className="inline-block text-xs px-2.5 py-0.5 rounded-full font-bold whitespace-nowrap" 
                           style={{ 
                             background: trackedReport.status === "Pending Review" ? C.redLight : trackedReport.status === "Under Investigation" ? C.amberLight : C.greenLight,
                             color: trackedReport.status === "Pending Review" ? C.redText : trackedReport.status === "Under Investigation" ? C.amberText : C.greenText
@@ -829,7 +829,7 @@ export default function CompliancePortal({
                         <p className="text-xs opacity-75 mb-2.5">Dept: {r.department}</p>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold"
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap"
                             style={{ 
                               background: r.status === "Pending Review" ? C.redLight : r.status === "Under Investigation" ? C.amberLight : C.greenLight,
                               color: r.status === "Pending Review" ? C.redText : r.status === "Under Investigation" ? C.amberText : C.greenText

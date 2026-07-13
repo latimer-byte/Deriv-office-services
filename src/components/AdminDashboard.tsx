@@ -225,7 +225,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title,
 
   // Average Resolution Time by Department
   const deptMetrics = useMemo(() => {
-    const depts = ["IT Admin", "Facilities Management", "Admin Office"];
+    const depts = ["IT Admin", "Facilities Management", "Office Admin"];
     
     return depts.map(dept => {
       // For department comparison, we pull from rawTickets so the comparison is complete
@@ -278,15 +278,15 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title,
   const redirectionMetrics = useMemo(() => {
     // For routing analytics, check rawTickets in scope to capture all redirections
     const redirectedTickets = rawTickets.filter(t => 
-      t.thread.some(e => e.type === "status" && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.from || "") && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.to || ""))
+      t.thread.some(e => e.type === "status" && ["IT Admin", "Facilities Management", "Office Admin"].includes(e.from || "") && ["IT Admin", "Facilities Management", "Office Admin"].includes(e.to || ""))
     );
 
     const redirectCount = redirectedTickets.length;
     const rate = rawTickets.length > 0 ? Math.round((redirectCount / rawTickets.length) * 100) : 0;
 
-    const destMap: Record<string, number> = { "IT Admin": 0, "Facilities Management": 0, "Admin Office": 0 };
+    const destMap: Record<string, number> = { "IT Admin": 0, "Facilities Management": 0, "Office Admin": 0 };
     redirectedTickets.forEach(t => {
-      const lastRedirect = [...t.thread].reverse().find(e => e.type === "status" && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.from || "") && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.to || ""));
+      const lastRedirect = [...t.thread].reverse().find(e => e.type === "status" && ["IT Admin", "Facilities Management", "Office Admin"].includes(e.from || "") && ["IT Admin", "Facilities Management", "Office Admin"].includes(e.to || ""));
       if (lastRedirect && lastRedirect.to) {
         destMap[lastRedirect.to] = (destMap[lastRedirect.to] || 0) + 1;
       }
@@ -379,7 +379,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title,
               <option value="All">All Departments</option>
               <option value="IT Admin">IT Admin</option>
               <option value="Facilities Management">Facilities</option>
-              <option value="Admin Office">Admin Office</option>
+              <option value="Office Admin">Office Admin</option>
             </select>
           </div>
         </div>
@@ -648,7 +648,7 @@ export default function AdminDashboard({ ticketStore, office, deptFilter, title,
                 </div>
               ) : (
                 [...redirectionMetrics.redirectedTickets].reverse().map(t => {
-                  const redirectEntry = t.thread.find(e => e.type === "status" && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.from || "") && ["IT Admin", "Facilities Management", "Admin Office"].includes(e.to || ""));
+                  const redirectEntry = t.thread.find(e => e.type === "status" && ["IT Admin", "Facilities Management", "Office Admin"].includes(e.from || "") && ["IT Admin", "Facilities Management", "Office Admin"].includes(e.to || ""));
                   return (
                     <div key={t.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.card, padding: "10px 12px", borderRadius: 10, border: `1px solid ${C.borderLight}` }}>
                       <div style={{ display: "flex", flexDirection: "column", gap: 2, maxWidth: "60%" }}>

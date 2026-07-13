@@ -288,7 +288,7 @@ export default function HrPortal({
               {office} · {role === "admin" ? "ADMIN WORKSPACE" : "STAFF PORTAL"}
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2">
-              <Briefcase size={26} className="text-[#8B5CF6]" /> HR Grievance & Complaint Portal
+              <Briefcase size={26} className="text-[#8B5CF6]" /> HR Grievance & Complaint Team
             </h1>
           </div>
         </div>
@@ -309,7 +309,7 @@ export default function HrPortal({
         <div className="min-h-[45vh] flex flex-col items-center justify-center py-6">
           <div className="text-center max-w-xl mb-10">
             <p className="text-sm sm:text-base opacity-80 mb-2">
-              Welcome to the secure Human Resources Portal. This system provides staff with a direct, confidential path to raise complaints, report grievances, or query leave and payroll.
+              Welcome to the secure Human Resources Team space. This system provides staff with a direct, confidential path to raise complaints, report grievances, or query leave and payroll.
             </p>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 mt-2">
               <Lock size={12} /> Encrypted & strict privacy controls active
@@ -597,7 +597,7 @@ export default function HrPortal({
                       </div>
                       <h4 title={t.subject} className="font-bold text-sm mb-2 line-clamp-1">{t.subject}</h4>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs px-2.5 py-0.5 rounded-full font-bold" 
+                        <span className="text-xs px-2.5 py-0.5 rounded-full font-bold whitespace-nowrap" 
                           style={{ 
                             background: t.status === "Submitted" ? C.purpleLight : t.status === "Under Investigation" ? C.amberLight : C.greenLight,
                             color: t.status === "Submitted" ? C.purpleText : t.status === "Under Investigation" ? C.amberText : C.greenText
@@ -628,7 +628,7 @@ export default function HrPortal({
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className="inline-block text-xs px-3 py-1 rounded-full font-bold"
+                        <span className="inline-block text-xs px-3 py-1 rounded-full font-bold whitespace-nowrap"
                           style={{ 
                             background: selectedTicket.status === "Submitted" ? C.purpleLight : selectedTicket.status === "Under Investigation" ? C.amberLight : C.greenLight,
                             color: selectedTicket.status === "Submitted" ? C.purpleText : selectedTicket.status === "Under Investigation" ? C.amberText : C.greenText
@@ -839,7 +839,7 @@ export default function HrPortal({
                       Reporter: <strong className={t.isAnonymous ? "text-[#8B5CF6]" : ""}>{t.staffName}</strong> ({t.staffId})
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" 
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap" 
                         style={{ 
                           background: t.status === "Submitted" ? C.purpleLight : t.status === "Under Investigation" ? C.amberLight : C.greenLight,
                           color: t.status === "Submitted" ? C.purpleText : t.status === "Under Investigation" ? C.amberText : C.greenText
