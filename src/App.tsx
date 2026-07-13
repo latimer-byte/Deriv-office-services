@@ -2132,6 +2132,48 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
     { label:"CRITICAL OPEN",   value:critical,   bg:C.coralLight, numColor:C.coral },
   ];
 
+  const handleExportCSV = () => {
+    if (shown.length === 0) return;
+    const headers = ["Ticket ID", "Title", "Category", "Department", "Priority", "Status", "Location", "Desk", "Date Submitted", "Staff Name", "Staff ID", "Asset Tag", "Asset Model", "Description", "Technician"];
+    const rows = shown.map(t => [
+      t.id,
+      t.title,
+      t.category,
+      t.dept,
+      t.priority,
+      t.status,
+      t.location,
+      t.desk,
+      t.date,
+      t.staffName,
+      t.staffId,
+      t.assetTag || "",
+      t.assetModel || "",
+      t.description,
+      t.technician
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => 
+        row.map(val => {
+          const stringVal = String(val ?? "").replace(/"/g, '""');
+          return `"${stringVal}"`;
+        }).join(",")
+      )
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `deriv_office_services_requests_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const PillRow = ({ active, setActive, items }: { active: string; setActive: (s: string) => void; items: string[] }) => (
     <div style={{ display:"flex", gap:8 }} className="overflow-x-auto no-scrollbar max-w-full -my-1 py-1">
       {items.map(s => (
@@ -2223,7 +2265,7 @@ function IncomingRequests({ tickets, deptFilter, title, office, onOpenTicket }: 
         </div>
         <div style={{ padding:"12px 20px", fontSize:13, color:C.textMuted, borderTop:`1px solid ${C.borderLight}`, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
           <span>Showing {shown.length} of {filtered.length} requests</span>
-          <span style={{ color:C.coral, fontSize:12, fontWeight:600, cursor:"pointer" }}>Export CSV →</span>
+          <span onClick={handleExportCSV} style={{ color:C.coral, fontSize:12, fontWeight:600, cursor:"pointer" }}>Export CSV →</span>
         </div>
       </div>
     </div>
